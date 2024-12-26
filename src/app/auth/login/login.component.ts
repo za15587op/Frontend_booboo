@@ -13,7 +13,7 @@ import { firstValueFrom, Subject, takeUntil } from 'rxjs';
 })
 export class LoginComponent implements OnInit {
 
-   user: any;
+  user: any;
   isLoading = false;
   inProgress = false;
   private loginTimeout: any = null;

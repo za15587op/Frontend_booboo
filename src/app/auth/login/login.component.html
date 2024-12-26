@@ -1,16 +1,38 @@
-<div class="login-container">
-  <!-- ปุ่มล็อกอิน -->
-  <div class="d-flex flex-column gap-2">
-    <!-- ปุ่มล็อกอินด้วย Google -->
-    <asl-google-signin-button
-      *ngIf="!user"
-      class="w-100"
-      type="standard"
-      size="large">
-    </asl-google-signin-button>
+<section>
+  <!-- กลุ่มรูปภาพและข้อความ -->
+   <!-- ล็อกอิน -->
+   <div class="container d-flex align-items-center justify-content-center min-vh-100">
+    <div class="d-flex flex-column align-items-center me-2">
+        <img src="https://s3-alpha-sig.figma.com/img/ed57/3b4e/c0a6250dc4bb73ccfc04ddff683fec69?Expires=1736121600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=V0wDLwIkDGgBBpK-7BZbRJGgfa3iDWad~Y1aoxbm32J38nCwer9kJDtXqxnx9DhsNGL-Y27FrXU8mR527m3Lzk7oPcUFrkkqEIgsBfahFWYcoyD1ldojjA381w5pCeQfwDgH6X4zSH4kR4wvyAtZ~-5FVXXeT1quapk1aly15bNqymgHk0Ol2epGhiIpsC2QFw8IIyCQlcFf8b5To7xqSC-we3SNU~8Eb2u3uFC-ajgbTeha3hjNz7RenEIXT5LZY6nXv2RPcLM7-tQCZo42PplpWsLe1ZlighU9Fz7cJvzwgx1t5g0pKWNJvzIxzBswuhEFUT3Sb3xFvuR8W-T82g__" 
+              class="mb-3">
+        <h2>BooBoo Memory</h2>
+        <p>Partners help you make decisions.</p>
+      </div>
+    <div class="bg-white rounded-4 shadow-lg p-5" style="max-width: 500px; width: 100%;">
+      <div class="d-flex flex-column align-items-center me-2">
+        <h1 class="fw-bold mb-1" style="color: #333;">
+          WELCOME TO
+        </h1>
+        <h1 class="fw-bold mb-5" style="color: #333;">
+          BooBoo AI ChatBot
+        </h1>
+        <div class="d-flex flex-column gap-3">
+          <button class="btn btn-light d-flex align-items-center justify-content-center rounded-pill shadow py-3 px-4 w-100">
+            <asl-google-signin-button
+            *ngIf="!user"
+            class="w-100"
+            type="standard"
+            size="large">
+          </asl-google-signin-button>
+          </button>
+          <button class="btn btn-light d-flex align-items-center justify-content-center rounded-pill shadow py-3 px-4 w-100" (click)="loginWithMicrosoft()">
+            <img src="/api/placeholder/24/24" alt="Microsoft" class="me-2">
+            Continue with Microsoft
+          </button>
+          <button (click)="logout()">logout</button>
+        </div>
+      </div>
+    </div>
+   </div>
+</section>
 
-    <button (click)="loginWithMicrosoft()">loginWithMicrosoft</button>
-    <button (click)="logout()">logout</button>
-
-  </div>
-</div>

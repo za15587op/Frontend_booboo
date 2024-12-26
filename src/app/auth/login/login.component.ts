@@ -91,4 +91,9 @@ export class LoginComponent implements OnInit {
   isLoggedIn(): boolean {
     return !!(this.msalService.instance.getActiveAccount() || this.user);
   }
+
+
+  test(){
+
+  }
 }

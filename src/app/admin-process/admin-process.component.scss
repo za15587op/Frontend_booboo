@@ -1,0 +1,15 @@
+section{
+    background-image: url(https://i.ibb.co/ccQsWB4/Colorful-Watercolor-Creative-Project-Presentation-9-1.png);
+    background-size: cover; /* ปรับขนาดรูปให้เต็มพื้นที่ */
+    background-position: center; /* วางรูปไว้ตรงกลาง */
+    height: 100vh; /* ความสูงเต็มหน้าจอ */
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+.bar{
+    background-color: #C5D3E8;
+    height: 70px;
+    li{
+        margin-right: 10px;
+    }
+}

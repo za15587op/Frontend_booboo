@@ -13,12 +13,8 @@ import { IPublicClientApplication, PublicClientApplication } from '@azure/msal-b
 export function MSALInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication({
     auth: {
-      clientId: 'baafcd8b-bbd8-4209-8c49-b33ea0df8690', // Client ID จาก Azure Portal
-      redirectUri: 'http://localhost:4200', // URL สำหรับ redirect หลังจาก login
-    },
-    cache: {
-      cacheLocation: "sessionStorage", // This configures where your cache will be stored
-      storeAuthStateInCookie: false, // Set this to "true" if you are having issues on IE11 or Edge
+      clientId: 'baafcd8b-bbd8-4209-8c49-b33ea0df8690',
+      redirectUri: 'http://localhost:4200',
     }
   });
 }
@@ -26,7 +22,7 @@ export function MSALInstanceFactory(): IPublicClientApplication {
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent
+    LoginComponent,
   ],
   imports: [
     BrowserModule,

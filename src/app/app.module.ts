@@ -8,6 +8,11 @@ import { LoginComponent } from './auth/login/login.component';
 import { GoogleLoginProvider} from '@abacritt/angularx-social-login';
 import { MsalModule, MsalService, MSAL_INSTANCE } from '@azure/msal-angular';
 import { IPublicClientApplication, PublicClientApplication } from '@azure/msal-browser';
+import { AdminHomeComponent } from './admin-home/admin-home.component';
+import { AdminProcessComponent } from './admin-process/admin-process.component';
+import { AdminUploadComponent } from './admin-upload/admin-upload.component';
+import { AdminDataComponent } from './admin-data/admin-data.component';
+import { AdminFileINFOComponent } from './admin-file-info/admin-file-info.component';
 
 
 export function MSALInstanceFactory(): IPublicClientApplication {
@@ -23,6 +28,11 @@ export function MSALInstanceFactory(): IPublicClientApplication {
   declarations: [
     AppComponent,
     LoginComponent,
+    AdminHomeComponent,
+    AdminProcessComponent,
+    AdminUploadComponent,
+    AdminDataComponent,
+    AdminFileINFOComponent
   ],
   imports: [
     BrowserModule,

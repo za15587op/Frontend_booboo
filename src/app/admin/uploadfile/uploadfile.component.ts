@@ -13,8 +13,9 @@ import { UploadfileService } from './uploadfile.service';
 })
 export class UploadFileComponent {
 
-  user_id:string = '';
+  userId:string = '';
   selectedFiles: File[] =[]
+  uploading = false
 
   constructor(private sv:UploadfileService, private router:Router, private route:ActivatedRoute){}
 
@@ -27,29 +28,42 @@ export class UploadFileComponent {
   }
 
   upload(): void {
-    this.route.data.subscribe(({uploadFile}) => {
-      this.user_id = uploadFile;
-    })
 
     if (this.selectedFile) {
       this.uploadFiles(this.selectedFile);
     }
   }
 
-  uploadFiles(images: FileList): void {
-    for (let index = 0; index < images.length; index++) {
-      const element = images[index];
+  uploadFiles(file: FileList): void {
+    const user_id = sessionStorage.getItem('user_id');
+    this.userId = user_id || '';
+
+    this.uploading = true;
+    for (let index = 0; index < file.length; index++) {
+      const element = file[index];
 
       const formData = new FormData();
       formData.append('file', element, element.name);
-      formData.append('user_id',this.user_id);
+      formData.append('user_id',this.userId);
       console.log(formData);
 
 
       this.sv.upload(formData).subscribe((res) => {
         console.log(res);
+        this.uploading = false;
       });
+
     }
   }
+
+  // onDrop(event: DragEvent): void {
+  //   event.preventDefault();
+  //   if (event?.dataTransfer?.files) {
+  //     this.uploadFiles(event.dataTransfer.files);
+  //   }
+  // }
+  // onDragOver(event: DragEvent): void {
+  //   event.preventDefault();
+  // }
 
 }

@@ -14,6 +14,7 @@ import { UploadFileComponent } from './admin/uploadfile/uploadfile.component';
 import { ShowComponent } from './admin/show/show.component';
 import { AdminFileINFOComponent } from './admin/admin-file-info/admin-file-info.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NavbarComponent } from './component/navbar/navbar.component';
 
 export function MSALInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication({
@@ -32,7 +33,8 @@ export function MSALInstanceFactory(): IPublicClientApplication {
     AdminProcessComponent,
     UploadFileComponent,
     ShowComponent,
-    AdminFileINFOComponent
+    AdminFileINFOComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,

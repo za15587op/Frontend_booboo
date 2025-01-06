@@ -1,8 +1,7 @@
 import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
-import { IdTokenClaims } from '@azure/msal-browser';
 import { firstValueFrom } from 'rxjs';
 import { LoginService } from './login.service';
 
@@ -17,7 +16,7 @@ export class LoginComponent implements OnInit {
   user: any;
   isLoading = false;
   inProgress = false;
-  private loginTimeout: any = null;
+  loginTimeout: any = null;
   loggedIn: any;
   user_id:any
 
@@ -78,25 +77,7 @@ export class LoginComponent implements OnInit {
     this.clearLoginState();
   }
 
-  logout() {
-    if (this.inProgress || this.isLoading) {
-      return;
-    }
 
-    this.isLoading = true;
-    this.inProgress = true;
-
-    if (this.msalService.instance.getActiveAccount()) {
-      firstValueFrom(this.msalService.logout());
-    }
-
-    if (this.user) {
-      this.socialAuthService.signOut();
-    }
-
-    this.user = null;
-    this.msalService.instance.clearCache();
-  }
 
   isLoggedIn(): boolean {
     return !!(this.msalService.instance.getActiveAccount() || this.user);
@@ -106,8 +87,6 @@ export class LoginComponent implements OnInit {
     const checkUser = this.userAll.find(
       (u: any) => u.username == user.account.username
     );
-
-    this.sv.setUserId(checkUser?.user_id);
 
     if (checkUser) {
       if (user.idTokenClaims.roles) {
@@ -139,10 +118,12 @@ export class LoginComponent implements OnInit {
         console.log(res);
         this.user_id = res
         console.log(this.user_id);
+
       });
 
       this.sv.setUserId(this.user_id);
-
     }
+      sessionStorage.setItem('user_id', this.user_id||checkUser.user_id);
+
   }
 }

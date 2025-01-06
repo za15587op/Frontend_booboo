@@ -7,9 +7,11 @@ import { AdminFileINFOComponent } from './admin/admin-file-info/admin-file-info.
 import { ShowComponent } from './admin/show/show.component';
 import { getUserId } from './admin/dashboard/dashborad.resolver';
 import { uploadFile } from './admin/uploadfile/uploadfile.resolver';
+import { NavbarComponent } from './component/navbar/navbar.component';
 
 const routes: Routes = [
   {path:"" , component:LoginComponent},
+  {path:"navbar", component:NavbarComponent},
   {path: "admin/dashboard", component: DashBoardComponent, resolve:{getUserId}},
   {path: "admin/uploadfile", component: UploadFileComponent, resolve:{uploadFile}},
   {path: "admin-info", component: AdminFileINFOComponent},

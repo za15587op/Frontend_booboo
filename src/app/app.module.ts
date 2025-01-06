@@ -8,22 +8,18 @@ import { LoginComponent } from './auth/login/login.component';
 import { GoogleLoginProvider} from '@abacritt/angularx-social-login';
 import { MsalModule, MsalService, MSAL_INSTANCE } from '@azure/msal-angular';
 import { IPublicClientApplication, PublicClientApplication } from '@azure/msal-browser';
-import { AdminHomeComponent } from './admin-home/admin-home.component';
-import { AdminProcessComponent } from './admin-process/admin-process.component';
-import { AdminUploadComponent } from './admin-upload/admin-upload.component';
-import { AdminDataComponent } from './admin-data/admin-data.component';
-import { AdminFileINFOComponent } from './admin-file-info/admin-file-info.component';
-
+import { DashBoardComponent } from './admin/dashboard/dashboard.component';
+import { AdminProcessComponent } from './admin/admin-process/admin-process.component';
+import { UploadFileComponent } from './admin/uploadfile/uploadfile.component';
+import { ShowComponent } from './admin/show/show.component';
+import { AdminFileINFOComponent } from './admin/admin-file-info/admin-file-info.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 export function MSALInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication({
     auth: {
-      clientId: 'baafcd8b-bbd8-4209-8c49-b33ea0df8690', // Client ID จาก Azure Portal
-      redirectUri: 'http://localhost:4200', // URL สำหรับ redirect หลังจาก login
-    },
-    cache: {
-      cacheLocation: "sessionStorage", // This configures where your cache will be stored
-      storeAuthStateInCookie: false, // Set this to "true" if you are having issues on IE11 or Edge
+      clientId: 'baafcd8b-bbd8-4209-8c49-b33ea0df8690',
+      redirectUri: 'http://localhost:4200',
     }
   });
 }
@@ -32,16 +28,17 @@ export function MSALInstanceFactory(): IPublicClientApplication {
   declarations: [
     AppComponent,
     LoginComponent,
-    AdminHomeComponent,
+    DashBoardComponent,
     AdminProcessComponent,
-    AdminUploadComponent,
-    AdminDataComponent,
+    UploadFileComponent,
+    ShowComponent,
     AdminFileINFOComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     SocialLoginModule,
+    ReactiveFormsModule,
     GoogleSigninButtonModule,
     MsalModule
   ],

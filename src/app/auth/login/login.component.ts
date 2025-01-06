@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { IdTokenClaims } from '@azure/msal-browser';
 import { firstValueFrom } from 'rxjs';
+import { LoginService } from './login.service';
 
 @Component({
   selector: 'app-login',
@@ -12,26 +13,33 @@ import { firstValueFrom } from 'rxjs';
   styleUrl: './login.component.scss',
 })
 export class LoginComponent implements OnInit {
+  userAll: any;
   user: any;
   isLoading = false;
   inProgress = false;
   private loginTimeout: any = null;
   loggedIn: any;
+  user_id:any
 
   constructor(
     private socialAuthService: SocialAuthService,
     private msalService: MsalService,
-    private router:Router
+    private router: Router,
+    private sv: LoginService
   ) {}
 
   ngOnInit(): void {
     this.msalService.initialize();
     this.clearLoginState();
 
+    this.sv.getUser().subscribe((res) => {
+      this.userAll = res;
+      console.log(this.userAll);
+    });
+
     this.socialAuthService.authState.subscribe((user) => {
       this.user = user;
       this.loggedIn = user != null;
-      console.log(this.user);
     });
   }
 
@@ -60,33 +68,13 @@ export class LoginComponent implements OnInit {
       prompt: 'select_account',
     };
 
-    const response = await firstValueFrom(
+    const user = await firstValueFrom(
       this.msalService.loginPopup(loginRequest)
     );
-    console.log('Login response:', response);
-    console.log('role:', response.idTokenClaims);
 
-    const idTokenClaims = response.idTokenClaims as IdTokenClaims;
+    this.checkUser(user);
 
-    if (idTokenClaims && idTokenClaims['roles']) {
-      const userRoles = idTokenClaims['roles'];
-      console.log('User Roles:', userRoles);
-
-      if (userRoles.includes('Admin')) {
-        console.log('User is an Admin');
-        this.router.navigate(['admin/dashboard']);
-
-      }if (userRoles.includes('User')) {
-        console.log('User is an User');
-        this.router.navigate(['user/show']);
-
-      }
-    } else {
-      console.log('No roles');
-      this.router.navigate(['user/show']);
-    }
-
-    this.msalService.instance.setActiveAccount(response.account);
+    this.msalService.instance.setActiveAccount(user.account);
     this.clearLoginState();
   }
 
@@ -112,5 +100,49 @@ export class LoginComponent implements OnInit {
 
   isLoggedIn(): boolean {
     return !!(this.msalService.instance.getActiveAccount() || this.user);
+  }
+
+  checkUser(user: any) {
+    const checkUser = this.userAll.find(
+      (u: any) => u.username == user.account.username
+    );
+
+    this.sv.setUserId(checkUser?.user_id);
+
+    if (checkUser) {
+      if (user.idTokenClaims.roles) {
+        if (user.idTokenClaims.roles.includes('Admin')) {
+          console.log('User is an Admin');
+          this.router.navigate(['admin/dashboard']);
+        } else if (user.idTokenClaims.roles.includes('User')) {
+          console.log('User is a User');
+          this.router.navigate(['user/show']);
+        }
+      } else {
+        console.log('No roles');
+        this.router.navigate(['user/show']);
+      }
+    } else {
+      const data = {
+        user_id: null,
+        username: user.account.username,
+        name: user.account.name,
+        token: user.idToken,
+        user_role: Array.isArray(user.idTokenClaims.roles)
+          ? user.idTokenClaims.roles[0]
+          : user.idTokenClaims.roles || 'User',
+      };
+
+      console.log('Data:', data);
+
+      this.sv.addUser(data).subscribe((res) => {
+        console.log(res);
+        this.user_id = res
+        console.log(this.user_id);
+      });
+
+      this.sv.setUserId(this.user_id);
+
+    }
   }
 }

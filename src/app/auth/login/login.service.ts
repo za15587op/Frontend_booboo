@@ -1,10 +1,28 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MsalService } from '@azure/msal-angular';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
 
-  constructor( ) { }
+  constructor(private http:HttpClient) { }
+  private userId: string | null = null;
+
+  addUser(data:any){
+    return this.http.post("http://127.0.0.1:5000/api/user",data)
+  }
+
+  getUser(){
+    return this.http.get("http://127.0.0.1:5000/api/showUsers")
+  }
+
+  setUserId(user_id:string):void{
+    this.userId = user_id
+  }
+
+  getUserId():string | null{
+    return this.userId
+  }
+
 }

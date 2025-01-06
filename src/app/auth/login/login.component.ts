@@ -19,9 +19,10 @@ export class LoginComponent implements OnInit {
   loginTimeout: any = null;
   loggedIn: any;
   user_id:any
+  isAdmin : any;
 
   constructor(
-    private socialAuthService: SocialAuthService,
+    private authService: SocialAuthService,
     private msalService: MsalService,
     private router: Router,
     private sv: LoginService
@@ -35,11 +36,33 @@ export class LoginComponent implements OnInit {
       this.userAll = res;
       console.log(this.userAll);
     });
-
-    this.socialAuthService.authState.subscribe((user) => {
+    this.authService.authState.subscribe((user) => {
       this.user = user;
-      this.loggedIn = user != null;
-    });
+      this.loggedIn = (user != null);
+      if (this.loggedIn) {
+        // กำหนด Role ผู้ใช้ (ตัวอย่าง)
+        const userRole = user.id === '114655793156976911639' ? 'admin' : 'user';
+
+        // เก็บ Role ลงใน LocalStorage
+        localStorage.setItem('userRole', userRole);
+
+        // ตรวจสอบ Role และนำทาง
+        if (userRole === 'admin') {
+          this.isAdmin = true;
+          this.router.navigate(['admin/dashboard']); // เส้นทางสำหรับผู้ดูแลระบบ
+        } else if (userRole === 'user') {
+          this.isAdmin = false;
+          this.router.navigate(['user']); // เส้นทางสำหรับผู้ใช้ทั่วไป
+        }
+      } else {
+        // ผู้ใช้ไม่ได้เข้าสู่ระบบ
+        this.isAdmin = false;
+        localStorage.removeItem('userRole');
+      }
+
+    console.log('User:', this.user , 'Role:', localStorage.getItem('userRole'));
+      });
+
   }
 
   clearLoginState(): void {
@@ -76,8 +99,6 @@ export class LoginComponent implements OnInit {
     this.msalService.instance.setActiveAccount(user.account);
     this.clearLoginState();
   }
-
-
 
   isLoggedIn(): boolean {
     return !!(this.msalService.instance.getActiveAccount() || this.user);

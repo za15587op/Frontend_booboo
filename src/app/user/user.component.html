@@ -1,0 +1,96 @@
+<div class="d-flex">
+    <!-- Sidebar -->
+    <div
+      id="sidebar"
+      [class.collapse]="!isSidebarOpen"
+      class="bg-light p-4"
+      style="width: 250px; height: 100vh;"
+    >
+      <div>
+        <h6 class="fw-bold">วันนี้</h6>
+        <p class="text-muted">วิธีการติดตั้ง Docker</p>
+        <h6 class="fw-bold mt-4">เมื่อวาน</h6>
+        <p class="text-muted">ดูตรวจประจำวันเทคนิค</p>
+      </div>
+    </div>
+  
+    <!-- Main Content -->
+    <div id="content" class="flex-grow-1 d-flex flex-column" style="height: 100vh;">
+      <!-- Navbar -->
+      <div class="p-3 shadow-sm bg-white d-flex justify-content-between align-items-center">
+        <button class="btn btn-light" type="button" (click)="toggleSidebar()">
+          <i class="bi bi-list" style="font-size: 24px;"></i>
+        </button>
+        <h5 class="mb-0">BooBoo Memory</h5>
+      </div>
+  
+      <!-- Chat Area -->
+      <div class="d-flex flex-column flex-grow-1 justify-content-between align-items-center p-3">
+        <!-- Initial Message -->
+        <div
+          *ngIf="messages.length === 0"
+          class="d-flex flex-column justify-content-center align-items-center flex-grow-1"
+        >
+          <h1 class="text-center mb-4">สวัสดีครับ มีอะไรให้ช่วยมั้ย</h1>
+          <!-- Chat Input -->
+          <div
+            class="d-flex align-items-center w-75"
+            style="background-color: #E0E0E0; border-radius: 2rem; padding: 10px; width: 798px;"
+          >
+            <input
+              [(ngModel)]="currentMessage"
+              type="text"
+              class="form-control border-0"
+              placeholder="ข้อความแชทBooBoo"
+              style="background-color: transparent; font-size: 16px; width: 798px;"
+            />
+            <button class="btn p-0 ms-2" (click)="sendMessage()">
+              <i class="bi bi-send" style="font-size: 24px; cursor: pointer;"></i>
+            </button>
+          </div>
+        </div>
+  
+        <!-- Chat Messages -->
+        <div
+          *ngIf="messages.length > 0"
+          class="chat-box flex-grow-1 w-100 overflow-auto mb-3 d-flex flex-column"
+        >
+          <div
+            *ngFor="let message of messages"
+            class="d-flex mb-2"
+            [ngClass]="{ 'justify-content-start': message.isUser, 'justify-content-end': !message.isUser }"
+          >
+            <div
+              class="p-3 rounded shadow-sm"
+              [ngClass]="{
+                'bg-success text-white': message.isUser,
+                'bg-secondary text-white': !message.isUser
+              }"
+              style="max-width: 70%;" 
+            >
+              {{ message.text }}
+            </div>
+          </div>
+        </div>
+  
+        <!-- Chat Input -->
+        <div
+          *ngIf="messages.length > 0"
+          class="d-flex align-items-center w-75"
+          style="background-color: #E0E0E0; border-radius: 2rem; padding: 10px; "
+        >
+          <input
+            [(ngModel)]="currentMessage"
+            type="text"
+            class="form-control border-0"
+            placeholder="ข้อความแชทBooBoo"
+            style="background-color: transparent; font-size: 16px; width: 100%; "
+          />
+          <button class="btn p-0 ms-2" (click)="sendMessage()">
+            <i class="bi bi-send" style="font-size: 24px; cursor: pointer;"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  

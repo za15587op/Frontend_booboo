@@ -3,10 +3,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { SocialLoginModule, SocialAuthServiceConfig, GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { provideHttpClient } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient } from '@angular/common/http';
 import { LoginComponent } from './auth/login/login.component';
 import { GoogleLoginProvider} from '@abacritt/angularx-social-login';
-import { MsalModule, MsalService, MSAL_INSTANCE } from '@azure/msal-angular';
 import { IPublicClientApplication, PublicClientApplication } from '@azure/msal-browser';
 import { DashBoardComponent } from './admin/dashboard/dashboard.component';
 import { AdminProcessComponent } from './admin/admin-process/admin-process.component';
@@ -14,13 +13,19 @@ import { UploadFileComponent } from './admin/uploadfile/uploadfile.component';
 import { ShowComponent } from './admin/show/show.component';
 import { AdminFileINFOComponent } from './admin/admin-file-info/admin-file-info.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MSAL_INSTANCE, MsalInterceptor, MsalModule, MsalService } from '@azure/msal-angular';
+import { UserComponent } from './user/user.component';
 
 export function MSALInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication({
     auth: {
-      clientId: 'baafcd8b-bbd8-4209-8c49-b33ea0df8690',
-      redirectUri: 'http://localhost:4200',
-    }
+      clientId: 'baafcd8b-bbd8-4209-8c49-b33ea0df8690', // ใส่ Client ID ของคุณ
+      redirectUri: 'http://localhost:4200', // ใส่ Redirect URI ตาม Azure
+    },
+    cache: {
+      cacheLocation: 'localStorage', // เก็บ token ใน localStorage
+      storeAuthStateInCookie: false, // สำหรับเบราว์เซอร์ที่เข้มงวดเรื่อง cookie
+    },
   });
 }
 
@@ -32,7 +37,8 @@ export function MSALInstanceFactory(): IPublicClientApplication {
     AdminProcessComponent,
     UploadFileComponent,
     ShowComponent,
-    AdminFileINFOComponent
+    AdminFileINFOComponent,
+    UserComponent,
   ],
   imports: [
     BrowserModule,
@@ -40,35 +46,34 @@ export function MSALInstanceFactory(): IPublicClientApplication {
     SocialLoginModule,
     ReactiveFormsModule,
     GoogleSigninButtonModule,
-    MsalModule
+    MsalModule,
+    FormsModule  // เพิ่ม MsalModule
   ],
-  providers: [provideHttpClient(),
+  providers: [
+    provideHttpClient(),
     {
       provide: 'SocialAuthServiceConfig',
       useValue: {
         autoLogin: false,
-        lang: 'en',
         providers: [
           {
             id: GoogleLoginProvider.PROVIDER_ID,
-            provider: new GoogleLoginProvider(
-              '978135281931-l3vsfqem6c1oj6htbmqngg2ot7akd7e1.apps.googleusercontent.com'
-            )
+            provider: new GoogleLoginProvider('978135281931-l3vsfqem6c1oj6htbmqngg2ot7akd7e1.apps.googleusercontent.com'), // Google Client ID
           },
         ],
-        onError: (err) => {
-          console.error(err);
-        }
       } as SocialAuthServiceConfig,
     },
     {
-      provide: MSAL_INSTANCE,
-      useFactory: MSALInstanceFactory
+      provide: MSAL_INSTANCE, // เพิ่ม Provider สำหรับ MSAL_INSTANCE
+      useFactory: MSALInstanceFactory,
     },
-    MsalService
+    MsalService, // ให้ MsalService ใช้ MSAL_INSTANCE
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: MsalInterceptor,
+      multi: true,
+    },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule {
-
-}
+export class AppModule {}

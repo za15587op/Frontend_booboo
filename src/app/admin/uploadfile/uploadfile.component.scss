@@ -1,8 +1,8 @@
 section{
     background-image: url(https://i.ibb.co/z8XsYbk/Colorful-Watercolor-Creative-Project-Presentation-9-2.png);
-    background-size: cover; /* ปรับขนาดรูปให้เต็มพื้นที่ */
-    background-position: center; /* วางรูปไว้ตรงกลาง */
-    height: 100vh; /* ความสูงเต็มหน้าจอ */
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
     margin: 0;
     font-family: Arial, sans-serif;
 }
@@ -15,7 +15,7 @@ section{
 }
 .border-dashed {
     border-style: dashed !important;
-    border-width: 10px; /* ปรับความหนาของเส้น */
+    border-width: 10px;
   }
 
  @media (max-width: 768px) {

@@ -1,7 +1,4 @@
-import { uploadFile } from './uploadfile.resolver';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { Component } from '@angular/core';
 import { UploadfileService } from './uploadfile.service';
 
 @Component({
@@ -17,7 +14,7 @@ export class UploadFileComponent {
   selectedFiles: File[] =[]
   uploading = false
 
-  constructor(private sv:UploadfileService, private router:Router, private route:ActivatedRoute){}
+  constructor(private sv:UploadfileService){}
 
   selectedFile!: FileList;
   onFileChange(event: Event): void {
@@ -28,7 +25,6 @@ export class UploadFileComponent {
   }
 
   upload(): void {
-
     if (this.selectedFile) {
       this.uploadFiles(this.selectedFile);
     }

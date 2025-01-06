@@ -1,4 +1,4 @@
-import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
+import { SocialAuthService } from '@abacritt/angularx-social-login';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
@@ -40,22 +40,18 @@ export class LoginComponent implements OnInit {
       this.user = user;
       this.loggedIn = (user != null);
       if (this.loggedIn) {
-        // กำหนด Role ผู้ใช้ (ตัวอย่าง)
         const userRole = user.id === '114655793156976911639' ? 'admin' : 'user';
 
-        // เก็บ Role ลงใน LocalStorage
-        localStorage.setItem('userRole', userRole);
+        sessionStorage.setItem('userRole', userRole);
 
-        // ตรวจสอบ Role และนำทาง
         if (userRole === 'admin') {
           this.isAdmin = true;
-          this.router.navigate(['admin/dashboard']); // เส้นทางสำหรับผู้ดูแลระบบ
+          this.router.navigate(['admin/dashboard']);
         } else if (userRole === 'user') {
           this.isAdmin = false;
-          this.router.navigate(['user']); // เส้นทางสำหรับผู้ใช้ทั่วไป
+          this.router.navigate(['user']);
         }
       } else {
-        // ผู้ใช้ไม่ได้เข้าสู่ระบบ
         this.isAdmin = false;
         localStorage.removeItem('userRole');
       }

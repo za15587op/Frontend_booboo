@@ -24,5 +24,7 @@ export class LoginService {
   getUserId():string | null{
     return this.userId
   }
-
+  getdata(){
+    return this.http.get("http://127.0.0.1:5000//api/data")
+  }
 }

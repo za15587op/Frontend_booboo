@@ -17,12 +17,4 @@ export class LoginService {
     return this.http.get("http://127.0.0.1:5000/api/showUsers")
   }
 
-  setUserId(user_id:string):void{
-    this.userId = user_id
-  }
-
-  getUserId():string | null{
-    return this.userId
-  }
-
 }

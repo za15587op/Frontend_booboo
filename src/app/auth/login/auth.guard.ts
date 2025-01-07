@@ -8,13 +8,13 @@ export class AuthGuard implements CanActivate {
   constructor(private router: Router) {}
 
   canActivate(): boolean | UrlTree {
-    const userRole = localStorage.getItem('userRole'); // รับ Role จาก LocalStorage
+    const userRole = sessionStorage.getItem('userRole');
 
     if (userRole == 'Admin') {
       return true; // อนุญาตให้เข้าถึง
     } 
     else{
-      this.router.navigate(['']); // หากไม่มีสิทธิ์เข้าถึง
+      this.router.navigate(['']);
     return false;
     }
   }

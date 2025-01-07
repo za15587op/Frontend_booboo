@@ -1,8 +1,7 @@
-import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { SocialAuthService } from '@abacritt/angularx-social-login';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
-import { IdTokenClaims } from '@azure/msal-browser';
 import { firstValueFrom } from 'rxjs';
 import { LoginService } from './login.service';
 
@@ -17,7 +16,7 @@ export class LoginComponent implements OnInit {
   user: any;
   isLoading = false;
   inProgress = false;
-  private loginTimeout: any = null;
+  loginTimeout: any = null;
   loggedIn: any;
   user_id:any
   isAdmin : any;
@@ -56,7 +55,7 @@ export class LoginComponent implements OnInit {
            // เส้นทางสำหรับผู้ดูแลระบบ
         } else if (userRole === 'User') {
           this.isAdmin = false;
-          this.router.navigate(['user']); // เส้นทางสำหรับผู้ใช้ทั่วไป
+          this.router.navigate(['user']);
         }
         this.sendUserDataToBackend({
           user_id: null,
@@ -66,14 +65,13 @@ export class LoginComponent implements OnInit {
         });
 
       } else {
-        // ผู้ใช้ไม่ได้เข้าสู่ระบบ
         this.isAdmin = false;
         localStorage.removeItem('userRole');
       }
 
     console.log('User:', this.user , 'Role:', localStorage.getItem('userRole'));
       });
-    
+
   }
   sendUserDataToBackend(data:any): void {
   this.sv.addUser(data).subscribe(
@@ -121,26 +119,6 @@ export class LoginComponent implements OnInit {
     this.clearLoginState();
   }
 
-  logout() {
-    if (this.inProgress || this.isLoading) {
-      return;
-    }
-
-    this.isLoading = true;
-    this.inProgress = true;
-
-    if (this.msalService.instance.getActiveAccount()) {
-      firstValueFrom(this.msalService.logout());
-    }
-
-    if (this.user) {
-      this.authService.signOut();
-    }
-
-    this.user = null;
-    this.msalService.instance.clearCache();
-  }
-
   isLoggedIn(): boolean {
     return !!(this.msalService.instance.getActiveAccount() || this.user);
   }
@@ -149,8 +127,6 @@ export class LoginComponent implements OnInit {
     const checkUser = this.userAll.find(
       (u: any) => u.username == user.account.username
     );
-
-    this.sv.setUserId(checkUser?.user_id);
 
     if (checkUser) {
       if (user.idTokenClaims.roles) {
@@ -165,6 +141,7 @@ export class LoginComponent implements OnInit {
         console.log('No roles');
         this.router.navigate(['user/show']);
       }
+      sessionStorage.setItem('user_id', this.user_id||checkUser.user_id);
     } else {
       const data = {
         user_id: null,
@@ -181,10 +158,12 @@ export class LoginComponent implements OnInit {
         console.log(res);
         this.user_id = res
         console.log(this.user_id);
+        sessionStorage.setItem('user_id', this.user_id||checkUser.user_id);
       });
 
       this.sv.setUserId(this.user_id);
-
     }
+
+
   }
 }

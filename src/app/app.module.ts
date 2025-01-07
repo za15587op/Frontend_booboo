@@ -13,6 +13,7 @@ import { UploadFileComponent } from './admin/uploadfile/uploadfile.component';
 import { ShowComponent } from './admin/show/show.component';
 import { AdminFileINFOComponent } from './admin/admin-file-info/admin-file-info.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NavbarComponent } from './component/navbar/navbar.component';
 import { MSAL_INSTANCE, MsalInterceptor, MsalModule, MsalService } from '@azure/msal-angular';
 import { UserComponent } from './user/user.component';
 
@@ -38,7 +39,8 @@ export function MSALInstanceFactory(): IPublicClientApplication {
     UploadFileComponent,
     ShowComponent,
     AdminFileINFOComponent,
-    UserComponent,
+    NavbarComponent,
+    UserComponent
   ],
   imports: [
     BrowserModule,

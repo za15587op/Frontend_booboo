@@ -1,20 +1,22 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, CanActivateFn, Router, UrlTree } from '@angular/router';
+import { CanActivate, Router, UrlTree } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthGuard implements CanActivate {
+export class LoginGuard implements CanActivate {
   constructor(private router: Router) {}
 
   canActivate(): boolean | UrlTree {
     const userRole = sessionStorage.getItem('userRole');
 
     if (userRole == 'Admin') {
-      return true; // อนุญาตให้เข้าถึง
-    } 
+      sessionStorage.removeItem('userRole')
+      return true;
+    }
     else{
       this.router.navigate(['']);
+      sessionStorage.removeItem('userRole')
     return false;
     }
   }

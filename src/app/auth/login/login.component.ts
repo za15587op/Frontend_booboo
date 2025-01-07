@@ -42,12 +42,12 @@ export class LoginComponent implements OnInit {
       this.loggedIn = (user != null);
       if (this.loggedIn) {
         // กำหนด Role ผู้ใช้ (ตัวอย่าง)
-        const userRole = user.id === '114655793156976911639' ? 'Admin' : 'User';
-      
+        const userRole = user.id == '114655793156976911639' ? 'Admin' : 'User';
+
         // เก็บ Role ลงใน LocalStorage
         localStorage.setItem('userRole', userRole);
-        
-      
+
+
         // ตรวจสอบ Role และนำทาง
         if (userRole === 'Admin') {
           this.isAdmin = true;
@@ -142,6 +142,8 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['user']);
       }
       sessionStorage.setItem('user_id', this.user_id||checkUser.user_id);
+      sessionStorage.setItem('userRole', user.idTokenClaims.roles);
+
     } else {
       const data = {
         user_id: null,
@@ -160,6 +162,7 @@ export class LoginComponent implements OnInit {
         console.log(this.user_id);
 
         sessionStorage.setItem('user_id', this.user_id||checkUser.user_id);
+        sessionStorage.setItem('userRole', user.idTokenClaims.roles);
       });
     }
 

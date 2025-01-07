@@ -6,20 +6,20 @@ import { UploadFileComponent } from './admin/uploadfile/uploadfile.component';
 import { AdminFileINFOComponent } from './admin/admin-file-info/admin-file-info.component';
 
 import { UserComponent } from './user/user.component';
-import {AuthGuard } from './auth/login/auth.guard';
 import { NavbarComponent } from './component/navbar/navbar.component';
 import { DataStoredComponent } from './admin/data-stored/data-stored.component';
-import { dataResolve } from './admin/data-stored/data-stored.resolver';
+import { getDataFileResolve } from './admin/data-stored/data-stored.resolver';
+import { LoginGuard } from './auth/login/login.guard';
 
 
 const routes: Routes = [
   {path:"" , component:LoginComponent},
   {path:"navbar", component:NavbarComponent },
-  {path: "admin/dashboard", component: DashBoardComponent },
-  {path: "admin/uploadfile", component: UploadFileComponent},
+  {path: "admin/dashboard", component: DashBoardComponent , canActivate : [LoginGuard] },
+  {path: "admin/uploadfile", component: UploadFileComponent, canActivate : [LoginGuard]},
   {path: "admin-info", component: AdminFileINFOComponent},
-  {path: "admin/data_stored", component: DataStoredComponent, resolve :{dataResolve}},
-  {path: "user", component: UserComponent}
+  {path: "admin/DataStored", component: DataStoredComponent, resolve :{getDataFileResolve}, canActivate : [LoginGuard]},
+  {path: "user", component: UserComponent, canActivate : [LoginGuard]}
 ];
 
 @NgModule({

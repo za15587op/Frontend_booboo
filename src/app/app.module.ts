@@ -10,12 +10,12 @@ import { IPublicClientApplication, PublicClientApplication } from '@azure/msal-b
 import { DashBoardComponent } from './admin/dashboard/dashboard.component';
 import { AdminProcessComponent } from './admin/admin-process/admin-process.component';
 import { UploadFileComponent } from './admin/uploadfile/uploadfile.component';
-import { ShowComponent } from './admin/show/show.component';
 import { AdminFileINFOComponent } from './admin/admin-file-info/admin-file-info.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NavbarComponent } from './component/navbar/navbar.component';
 import { MSAL_INSTANCE, MsalInterceptor, MsalModule, MsalService } from '@azure/msal-angular';
 import { UserComponent } from './user/user.component';
+import { DataStoredComponent } from './admin/data-stored/data-stored.component';
 
 export function MSALInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication({
@@ -37,10 +37,10 @@ export function MSALInstanceFactory(): IPublicClientApplication {
     DashBoardComponent,
     AdminProcessComponent,
     UploadFileComponent,
-    ShowComponent,
     AdminFileINFOComponent,
     NavbarComponent,
-    UserComponent
+    UserComponent,
+    DataStoredComponent
   ],
   imports: [
     BrowserModule,

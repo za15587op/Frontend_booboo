@@ -8,6 +8,11 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
-export class DashBoardComponent{
+export class DashBoardComponent implements OnInit {
+  constructor(){}
+
+  ngOnInit(): void {
+    console.log('DashBoardComponent');
+  }
 
 }

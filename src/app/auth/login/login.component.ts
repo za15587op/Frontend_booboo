@@ -31,6 +31,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.msalService.initialize();
+    this.sendUserDataToBackend
     this.clearLoginState();
 
     this.sv.getUser().subscribe((res) => {
@@ -42,19 +43,28 @@ export class LoginComponent implements OnInit {
       this.loggedIn = (user != null);
       if (this.loggedIn) {
         // กำหนด Role ผู้ใช้ (ตัวอย่าง)
-        const userRole = user.id === '114655793156976911639' ? 'admin' : 'user';
+        const userRole = user.id === '114655793156976911639' ? 'Admin' : 'User';
       
         // เก็บ Role ลงใน LocalStorage
         localStorage.setItem('userRole', userRole);
+        
       
         // ตรวจสอบ Role และนำทาง
-        if (userRole === 'admin') {
+        if (userRole === 'Admin') {
           this.isAdmin = true;
-          this.router.navigate(['admin/dashboard']); // เส้นทางสำหรับผู้ดูแลระบบ
-        } else if (userRole === 'user') {
+          this.router.navigate(['admin/dashboard']);
+           // เส้นทางสำหรับผู้ดูแลระบบ
+        } else if (userRole === 'User') {
           this.isAdmin = false;
           this.router.navigate(['user']); // เส้นทางสำหรับผู้ใช้ทั่วไป
         }
+        this.sendUserDataToBackend({
+          user_id: null,
+          username: user.email,
+          name: user.name,
+          user_role: userRole,
+        });
+
       } else {
         // ผู้ใช้ไม่ได้เข้าสู่ระบบ
         this.isAdmin = false;
@@ -65,6 +75,16 @@ export class LoginComponent implements OnInit {
       });
     
   }
+  sendUserDataToBackend(data:any): void {
+  this.sv.addUser(data).subscribe(
+    (response: any) => {
+      console.log('User data successfully sent to backend:', response);
+    },
+    (error: any) => {
+      console.error('Error sending user data to backend:', error);
+    }
+  );
+}
 
   clearLoginState(): void {
     this.isLoading = false;
@@ -150,7 +170,6 @@ export class LoginComponent implements OnInit {
         user_id: null,
         username: user.account.username,
         name: user.account.name,
-        token: user.idToken,
         user_role: Array.isArray(user.idTokenClaims.roles)
           ? user.idTokenClaims.roles[0]
           : user.idTokenClaims.roles || 'User',

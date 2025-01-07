@@ -10,7 +10,7 @@ export class AuthGuard implements CanActivate {
   canActivate(): boolean | UrlTree {
     const userRole = localStorage.getItem('userRole'); // รับ Role จาก LocalStorage
 
-    if (userRole === 'admin') {
+    if (userRole == 'Admin') {
       return true; // อนุญาตให้เข้าถึง
     } 
     else{

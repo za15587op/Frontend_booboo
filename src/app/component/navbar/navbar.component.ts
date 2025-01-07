@@ -25,7 +25,8 @@ export class NavbarComponent implements OnInit {
     constructor(
       private socialAuthService: SocialAuthService,
       private msalService: MsalService,
-      private sv: NavbarService
+      private sv: NavbarService,
+      private router:Router
     ) {}
 
     ngOnInit(): void {
@@ -53,5 +54,6 @@ export class NavbarComponent implements OnInit {
 
     this.user = null;
     this.msalService.instance.clearCache();
+    this.router.navigate(['/']);
   }
 }

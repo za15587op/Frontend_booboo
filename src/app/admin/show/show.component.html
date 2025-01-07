@@ -13,6 +13,7 @@
                         <th>ชื่อ</th>
                         <th>เจ้าของ</th>
                         <th>วันที่อัปโหลด</th>
+                        <th>ดาวน์โหลด</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -22,6 +23,7 @@
                         <td><i class="bi bi-file-pdf text-danger me-2"></i>{{item.file_name}}</td>
                         <td>{{item.name}}</td>
                         <td>อัปเพิ่มไปด้วย</td>
+                        <td><a (click)="downloadFile(item.file, item.file_name)">ดาวน์โหลด</a></td>
                         <td><i class="bi bi-three-dots-vertical"></i></td>
                     </tr>
                 }

@@ -135,11 +135,11 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['admin/dashboard']);
         } else if (user.idTokenClaims.roles.includes('User')) {
           console.log('User is a User');
-          this.router.navigate(['user/show']);
+          this.router.navigate(['user']);
         }
       } else {
         console.log('No roles');
-        this.router.navigate(['user/show']);
+        this.router.navigate(['user']);
       }
       sessionStorage.setItem('user_id', this.user_id||checkUser.user_id);
     } else {

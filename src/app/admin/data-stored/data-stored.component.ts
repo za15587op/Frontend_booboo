@@ -2,14 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-show',
+  selector: 'app-data-stored',
   standalone: false,
-
-  templateUrl: './show.component.html',
-  styleUrl: './show.component.scss'
+  
+  templateUrl: './data-stored.component.html',
+  styleUrl: './data-stored.component.scss'
 })
-export class ShowComponent implements OnInit {
-  data :any;
+export class DataStoredComponent implements OnInit {
+data :any;
   constructor(private route : ActivatedRoute){}
 
   ngOnInit(): void {
@@ -26,3 +26,4 @@ export class ShowComponent implements OnInit {
     link.click();
   }
 }
+

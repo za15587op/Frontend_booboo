@@ -10,9 +10,9 @@ export class AuthGuard implements CanActivate {
   canActivate(): boolean | UrlTree {
     const userRole = sessionStorage.getItem('userRole');
 
-    if (userRole === 'admin') {
-      return true;
-    }
+    if (userRole == 'Admin') {
+      return true; // อนุญาตให้เข้าถึง
+    } 
     else{
       this.router.navigate(['']);
     return false;

@@ -30,6 +30,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.msalService.initialize();
+    this.sendUserDataToBackend
     this.clearLoginState();
 
     this.sv.getUser().subscribe((res) => {
@@ -40,17 +41,29 @@ export class LoginComponent implements OnInit {
       this.user = user;
       this.loggedIn = (user != null);
       if (this.loggedIn) {
-        const userRole = user.id === '114655793156976911639' ? 'admin' : 'user';
-
-        sessionStorage.setItem('userRole', userRole);
-
-        if (userRole === 'admin') {
+        // กำหนด Role ผู้ใช้ (ตัวอย่าง)
+        const userRole = user.id === '114655793156976911639' ? 'Admin' : 'User';
+      
+        // เก็บ Role ลงใน LocalStorage
+        localStorage.setItem('userRole', userRole);
+        
+      
+        // ตรวจสอบ Role และนำทาง
+        if (userRole === 'Admin') {
           this.isAdmin = true;
           this.router.navigate(['admin/dashboard']);
-        } else if (userRole === 'user') {
+           // เส้นทางสำหรับผู้ดูแลระบบ
+        } else if (userRole === 'User') {
           this.isAdmin = false;
           this.router.navigate(['user']);
         }
+        this.sendUserDataToBackend({
+          user_id: null,
+          username: user.email,
+          name: user.name,
+          user_role: userRole,
+        });
+
       } else {
         this.isAdmin = false;
         localStorage.removeItem('userRole');
@@ -60,6 +73,16 @@ export class LoginComponent implements OnInit {
       });
 
   }
+  sendUserDataToBackend(data:any): void {
+  this.sv.addUser(data).subscribe(
+    (response: any) => {
+      console.log('User data successfully sent to backend:', response);
+    },
+    (error: any) => {
+      console.error('Error sending user data to backend:', error);
+    }
+  );
+}
 
   clearLoginState(): void {
     this.isLoading = false;

@@ -118,12 +118,12 @@ export class LoginComponent implements OnInit {
         console.log('No roles');
         this.router.navigate(['user/show']);
       }
+      sessionStorage.setItem('user_id', this.user_id||checkUser.user_id);
     } else {
       const data = {
         user_id: null,
         username: user.account.username,
         name: user.account.name,
-        token: user.idToken,
         user_role: Array.isArray(user.idTokenClaims.roles)
           ? user.idTokenClaims.roles[0]
           : user.idTokenClaims.roles || 'User',
@@ -135,12 +135,12 @@ export class LoginComponent implements OnInit {
         console.log(res);
         this.user_id = res
         console.log(this.user_id);
-
+        sessionStorage.setItem('user_id', this.user_id||checkUser.user_id);
       });
 
       this.sv.setUserId(this.user_id);
     }
-      sessionStorage.setItem('user_id', this.user_id||checkUser.user_id);
+
 
   }
 }

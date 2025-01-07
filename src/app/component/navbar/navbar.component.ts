@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { LoginService } from '../../auth/login/login.service';
 import { firstValueFrom } from 'rxjs';
+import { NavbarService } from './navbar.service';
 
 @Component({
   selector: 'app-navbar',
@@ -14,7 +15,7 @@ import { firstValueFrom } from 'rxjs';
 })
 export class NavbarComponent {
 
-    userAll: any;
+    data:any
     user: any;
     isLoading = false;
     inProgress = false;
@@ -25,8 +26,21 @@ export class NavbarComponent {
       private socialAuthService: SocialAuthService,
       private msalService: MsalService,
       private router: Router,
-      private sv: LoginService
+      private sv: NavbarService
     ) {}
+
+    ngOnInit(): void {
+      const user_id = sessionStorage.getItem('user_id');
+      console.log(user_id);
+
+      if (user_id) {
+        const body = { user_id: user_id };
+        this.sv.getByUser(body).subscribe((res) =>{
+          console.log(res,"navbar");
+          this.data = res
+        });
+      }
+    }
 
 
   logout() {

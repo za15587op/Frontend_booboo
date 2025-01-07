@@ -1,7 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { LoginService } from '../../auth/login/login.service';
-import { ActivatedRoute } from '@angular/router';
-import { dataResolve } from './data.resolver';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-show',
@@ -10,14 +7,6 @@ import { dataResolve } from './data.resolver';
   templateUrl: './show.component.html',
   styleUrl: './show.component.scss'
 })
-export class ShowComponent implements OnInit {
-  data :any;
-  constructor(private Route : ActivatedRoute) { }
+export class ShowComponent {
 
-  ngOnInit(): void {
-    this.Route.data.subscribe(({dataResolve}) =>{
-      this.data = dataResolve;
-      console.log(this.data ,"data");
-    })
-  }
 }

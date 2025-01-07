@@ -5,7 +5,6 @@ import { DashBoardComponent } from './admin/dashboard/dashboard.component';
 import { UploadFileComponent } from './admin/uploadfile/uploadfile.component';
 import { AdminFileINFOComponent } from './admin/admin-file-info/admin-file-info.component';
 import { ShowComponent } from './admin/show/show.component';
-import { uploadFile } from './admin/uploadfile/uploadfile.resolver';
 import { UserComponent } from './user/user.component';
 import {AuthGuard } from './auth/login/auth.guard';
 import { NavbarComponent } from './component/navbar/navbar.component';
@@ -15,7 +14,7 @@ const routes: Routes = [
   {path:"" , component:LoginComponent},
   {path:"navbar", component:NavbarComponent },
   {path: "admin/dashboard", component: DashBoardComponent },
-  {path: "admin/uploadfile", component: UploadFileComponent, resolve:{uploadFile} },
+  {path: "admin/uploadfile", component: UploadFileComponent},
   {path: "admin-info", component: AdminFileINFOComponent},
   {path: "admin/show", component: ShowComponent, resolve:{dataResolve}},
   {path: "user", component: UserComponent}

@@ -1,5 +1,5 @@
 import { SocialAuthService } from '@abacritt/angularx-social-login';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { LoginService } from '../../auth/login/login.service';
@@ -13,7 +13,7 @@ import { NavbarService } from './navbar.service';
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
 
     data:any
     user: any;
@@ -25,7 +25,6 @@ export class NavbarComponent {
     constructor(
       private socialAuthService: SocialAuthService,
       private msalService: MsalService,
-      private router: Router,
       private sv: NavbarService
     ) {}
 
@@ -34,9 +33,7 @@ export class NavbarComponent {
       console.log(user_id);
 
       if (user_id) {
-        const body = { user_id: user_id };
-        this.sv.getByUser(body).subscribe((res) =>{
-          console.log(res,"navbar");
+        this.sv.getByUser(user_id).subscribe((res) =>{
           this.data = res
         });
       }

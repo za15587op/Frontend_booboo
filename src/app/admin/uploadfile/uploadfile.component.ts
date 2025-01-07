@@ -52,6 +52,8 @@ export class UploadFileComponent {
     }
   }
 
+
+
   // onDrop(event: DragEvent): void {
   //   event.preventDefault();
   //   if (event?.dataTransfer?.files) {

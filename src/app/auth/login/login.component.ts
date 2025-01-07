@@ -158,10 +158,9 @@ export class LoginComponent implements OnInit {
         console.log(res);
         this.user_id = res
         console.log(this.user_id);
+
         sessionStorage.setItem('user_id', this.user_id||checkUser.user_id);
       });
-
-      this.sv.setUserId(this.user_id);
     }
 
 

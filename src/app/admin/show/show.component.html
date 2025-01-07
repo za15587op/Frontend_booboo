@@ -18,12 +18,14 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @for (item of data; track $index) {
                     <tr>
-                        <td><i class="bi bi-file-pdf text-danger me-2"></i> Docker</td>
-                        <td>BooBoo (Admin Technical)</td>
-                        <td>7/10/2024</td>
+                        <td><i class="bi bi-file-pdf text-danger me-2"></i>{{item.file_name}}</td>
+                        <td>{{item.name}}</td>
+                        <td>อัปเพิ่มไปด้วย</td>
                         <td><i class="bi bi-three-dots-vertical"></i></td>
                     </tr>
+                }
                 </tbody>
             </table>
         </div>

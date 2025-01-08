@@ -20,7 +20,6 @@ export class LoginComponent implements OnInit {
   loggedIn: any;
   user_id:any
   isAdmin : any;
-
   constructor(
     private authService: SocialAuthService,
     private msalService: MsalService,
@@ -40,7 +39,7 @@ export class LoginComponent implements OnInit {
       this.loggedIn = (user != null);
       if (this.loggedIn) {
         // กำหนด Role ผู้ใช้ (ตัวอย่าง)
-        const userRole = user.id == '114655793156976911639' ? 'Admin' : 'User';
+        const userRole = user.id == '104502146614369152099' ? 'Admin' : 'User';
 
         // เก็บ Role ลงใน LocalStorage
         sessionStorage.setItem('userRole', userRole);

@@ -15,7 +15,7 @@ import { NavbarService } from './navbar.service';
 })
 export class NavbarComponent implements OnInit {
 
-    data:any
+    data:any = {};
     user: any;
     isLoading = false;
     inProgress = false;
@@ -40,7 +40,6 @@ export class NavbarComponent implements OnInit {
       }
     }
 
-
   logout() {
     sessionStorage.removeItem('user_id');
 
@@ -54,6 +53,6 @@ export class NavbarComponent implements OnInit {
 
     this.user = null;
     this.msalService.instance.clearCache();
-    this.router.navigate(['/']);
+    this.router.navigate(['']);
   }
 }

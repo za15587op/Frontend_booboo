@@ -11,12 +11,10 @@ export class LoginGuard implements CanActivate {
     const userRole = sessionStorage.getItem('userRole');
 
     if (userRole == 'Admin') {
-      sessionStorage.removeItem('userRole')
       return true;
     }
     else{
       this.router.navigate(['']);
-      sessionStorage.removeItem('userRole')
     return false;
     }
   }

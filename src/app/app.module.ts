@@ -16,6 +16,7 @@ import { NavbarComponent } from './component/navbar/navbar.component';
 import { MSAL_INSTANCE, MsalInterceptor, MsalModule, MsalService } from '@azure/msal-angular';
 import { UserComponent } from './user/user.component';
 import { DataStoredComponent } from './admin/data-stored/data-stored.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 export function MSALInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication({
@@ -23,10 +24,10 @@ export function MSALInstanceFactory(): IPublicClientApplication {
       clientId: 'baafcd8b-bbd8-4209-8c49-b33ea0df8690', // ใส่ Client ID ของคุณ
       redirectUri: 'http://localhost:4200', // ใส่ Redirect URI ตาม Azure
     },
-    cache: {
-      cacheLocation: 'localStorage', // เก็บ token ใน localStorage
-      storeAuthStateInCookie: false, // สำหรับเบราว์เซอร์ที่เข้มงวดเรื่อง cookie
-    },
+    // cache: {
+    //   cacheLocation: 'localStorage', // เก็บ token ใน localStorage
+    //   storeAuthStateInCookie: false, // สำหรับเบราว์เซอร์ที่เข้มงวดเรื่อง cookie
+    // },
   });
 }
 
@@ -49,6 +50,7 @@ export function MSALInstanceFactory(): IPublicClientApplication {
     ReactiveFormsModule,
     GoogleSigninButtonModule,
     MsalModule,
+    FontAwesomeModule,
     FormsModule  // เพิ่ม MsalModule
   ],
   providers: [

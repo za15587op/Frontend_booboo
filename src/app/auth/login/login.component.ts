@@ -160,8 +160,7 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['user']);
       }
       sessionStorage.setItem('user_id', this.user_id||checkUser.user_id);
-      sessionStorage.setItem('userRole', user.idTokenClaims.roles);
-
+      sessionStorage.setItem('userRole', user.idTokenClaims.roles || 'User');
     } else {
       const data = {
         user_id: null,
@@ -172,16 +171,23 @@ export class LoginComponent implements OnInit {
           : user.idTokenClaims.roles || 'User',
       };
 
-      console.log('Data:', data);
-
       this.sv.addUser(data).subscribe((res) => {
         console.log(res);
         this.user_id = res
         console.log(this.user_id);
 
         sessionStorage.setItem('user_id', this.user_id||checkUser.user_id);
-        sessionStorage.setItem('userRole', user.idTokenClaims.roles);
+        // sessionStorage.setItem('userRole', user.idTokenClaims.roles || 'User');
+        sessionStorage.setItem('userRole', data.user_role);
       });
+
+      const role = sessionStorage.getItem('userRole');
+      if (role == 'Admin') {
+        this.router.navigate(['admin/dashboard']);
+      } else if (role == 'User') {
+        this.router.navigate(['user']);
+      }
+
     }
 
 

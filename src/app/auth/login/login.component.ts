@@ -30,9 +30,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.msalService.initialize();
-    this.sendUserDataToBackend
     this.clearLoginState();
-
     this.sv.getUser().subscribe((res) => {
       this.userAll = res;
       console.log(this.userAll);
@@ -45,19 +43,20 @@ export class LoginComponent implements OnInit {
         const userRole = user.id == '114655793156976911639' ? 'Admin' : 'User';
 
         // เก็บ Role ลงใน LocalStorage
-        localStorage.setItem('userRole', userRole);
+        sessionStorage.setItem('userRole', userRole);
 
 
         // ตรวจสอบ Role และนำทาง
-        if (userRole === 'Admin') {
+        if (userRole == 'Admin') {
           this.isAdmin = true;
-          this.router.navigate(['admin/dashboard']);
+          this.router.navigate(['admin/dashboard'], { queryParams: { name: user.name, role: userRole } 
+          });
            // เส้นทางสำหรับผู้ดูแลระบบ
-        } else if (userRole === 'User') {
+        } else if (userRole == 'User') {
           this.isAdmin = false;
           this.router.navigate(['user']);
         }
-        this.sendUserDataToBackend({
+        this.checkUsergoogle({
           user_id: null,
           username: user.email,
           name: user.name,
@@ -66,13 +65,33 @@ export class LoginComponent implements OnInit {
 
       } else {
         this.isAdmin = false;
-        localStorage.removeItem('userRole');
+        sessionStorage.removeItem('userRole');
       }
 
-    console.log('User:', this.user , 'Role:', localStorage.getItem('userRole'));
+    console.log('User:', this.user , 'Role:', sessionStorage.getItem('userRole'));
       });
 
   }
+  checkUsergoogle(user: any): void {
+    // ตรวจสอบว่ามีข้อมูลผู้ใช้ทั้งหมดหรือไม่
+    // ค้นหาผู้ใช้ในฐานข้อมูล
+    const checkUser = this.userAll.find((u: any) => u.name === user.name);
+  
+    if (checkUser) {
+      console.log(user.name, 'พบผู้ใช้งานแล้ว');
+    } else {
+      console.log('ไม่พบผู้ใช้งาน ทำการเพิ่มข้อมูลผู้ใช้');
+      this.sv.addUser(user).subscribe(
+        (response: any) => {
+          console.log('ส่งข้อมูลผู้ใช้ไปยัง backend สำเร็จ:', response);
+        },
+        (error: any) => {
+          console.error('เกิดข้อผิดพลาดในการส่งข้อมูลผู้ใช้ไปยัง backend:', error);
+        }
+      );
+    }
+  }
+
   sendUserDataToBackend(data:any): void {
   this.sv.addUser(data).subscribe(
     (response: any) => {
@@ -132,7 +151,7 @@ export class LoginComponent implements OnInit {
       if (user.idTokenClaims.roles) {
         if (user.idTokenClaims.roles.includes('Admin')) {
           console.log('User is an Admin');
-          this.router.navigate(['admin/dashboard']);
+          this.router.navigate(['admin/dashboard']) ,{ queryParams: { name: user.name, role: user.idTokenClaims.roles }}
         } else if (user.idTokenClaims.roles.includes('User')) {
           console.log('User is a User');
           this.router.navigate(['user']);

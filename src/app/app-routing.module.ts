@@ -18,8 +18,8 @@ const routes: Routes = [
   {path: "admin/dashboard", component: DashBoardComponent , canActivate : [LoginGuard] },
   {path: "admin/uploadfile", component: UploadFileComponent, canActivate : [LoginGuard]},
   {path: "admin-info", component: AdminFileINFOComponent},
-  {path: "admin/DataStored", component: DataStoredComponent, resolve :{getDataFileResolve}, canActivate : [LoginGuard]},
-  {path: "user", component: UserComponent, canActivate : [LoginGuard]}
+  {path: "admin/DataStored", component: DataStoredComponent, resolve :{getDataFileResolve}},
+  {path: "user", component: UserComponent}
 ];
 
 @NgModule({

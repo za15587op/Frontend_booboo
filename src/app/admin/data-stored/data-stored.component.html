@@ -25,6 +25,7 @@
                         <td>อัปเพิ่มไปด้วย</td>
                         <td><a (click)="downloadFile(item.file, item.file_name)">ดาวน์โหลด</a></td>
                         <td><i class="bi bi-three-dots-vertical"></i></td>
+                        <button (click)="deleteFile(item.file_id)">ลบ</button>
                     </tr>
                 }
                 </tbody>

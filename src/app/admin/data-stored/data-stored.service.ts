@@ -11,4 +11,7 @@ export class DataStoredService {
    getDataFiles(){
      return this.http.get("http://127.0.0.1:5000/api/getDataFile")
    }
+   deldataflie(fileId : string){
+    return this.http.delete(`http://127.0.0.1:5000/api/file/${fileId}`)
+   }
  }

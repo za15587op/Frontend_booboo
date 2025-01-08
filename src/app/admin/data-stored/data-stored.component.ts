@@ -1,5 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { DataStoredService } from './data-stored.service';
 
 @Component({
   selector: 'app-data-stored',
@@ -10,13 +12,10 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class DataStoredComponent implements OnInit {
 data :any;
-  constructor(private route : ActivatedRoute){}
+  constructor(private route : ActivatedRoute, private datasv :DataStoredService ,private http : HttpClient){}
 
   ngOnInit(): void {
-    this.route.data.subscribe(({getDataFileResolve}) => {
-      this.data = getDataFileResolve;
-      console.log(this.data);
-    });
+    this.getdata();
   }
 
   downloadFile(fileData: string, fileName: string): void {
@@ -25,5 +24,25 @@ data :any;
     link.download = fileName;
     link.click();
   }
+  deleteFile(fileId: string): void {
+    console.log(`File ID to delete: ${fileId}`); // Log fileId
+    if (confirm('คุณแน่ใจว่าต้องการลบไฟล์นี้?')) {
+      this.datasv.deldataflie(fileId).subscribe({
+        next: () => {
+          alert('ลบไฟล์สำเร็จ');
+          window.location.reload();
+        },
+        error: (err) => {
+          console.error('Error deleting file:', err);
+          alert('เกิดข้อผิดพลาดในการลบไฟล์');
+        }
+      });
+    }
+  }
+  getdata() :void {
+    this.route.data.subscribe(({getDataFileResolve}) =>{
+      this.data = getDataFileResolve
+      console.log(this.data)
+    })
+  }
 }
-

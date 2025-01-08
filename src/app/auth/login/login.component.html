@@ -20,12 +20,13 @@
           <button
             class="btn btn-light d-flex align-items-center justify-content-center rounded-pill shadow py-3 px-4 w-100"
           >
-            <asl-google-signin-button
-            class="w-100"
-            type="standard"
-            size="large"
->
-          </asl-google-signin-button>
+          <asl-google-signin-button
+          class="google-signin-btn w-300"
+          type="standard"
+          size="large"
+          shape="circle"
+          logo_alignment="center">
+        </asl-google-signin-button>
           </button>
           <button class="btn btn-light d-flex align-items-center justify-content-center rounded-pill shadow py-3 px-4 w-100" (click)="loginWithMicrosoft()">
             <i class="fa-brands fa-microsoft"> </i>

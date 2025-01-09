@@ -21,6 +21,8 @@
             <button (click)="upload()">ok</button>
         </div>
     </div>
-    
-
+    <div>
+      <input class="form-control" type="file" (change)="onFileChange($event)" multiple="true" >
+      <button (click)="upload()">ok</button>
+    </div>
 </section>

@@ -30,7 +30,7 @@ export class NavbarComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-      const user_id = sessionStorage.getItem('user_id');
+      const user_id = localStorage.getItem('user_id');
       console.log(user_id);
 
       if (user_id) {
@@ -41,7 +41,7 @@ export class NavbarComponent implements OnInit {
     }
 
   logout() {
-    sessionStorage.removeItem('user_id');
+    localStorage.removeItem('user_id');
 
     if (this.msalService.instance.getActiveAccount()) {
       firstValueFrom(this.msalService.logout());

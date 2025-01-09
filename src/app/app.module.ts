@@ -17,6 +17,7 @@ import { MSAL_INSTANCE, MsalInterceptor, MsalModule, MsalService } from '@azure/
 import { UserComponent } from './user/user.component';
 import { DataStoredComponent } from './admin/data-stored/data-stored.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { loginInterceptor } from './auth/login/login.interceptor';
 
 export function MSALInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication({
@@ -70,14 +71,18 @@ export function MSALInstanceFactory(): IPublicClientApplication {
       } as SocialAuthServiceConfig,
     },
     {
-      provide: MSAL_INSTANCE, // เพิ่ม Provider สำหรับ MSAL_INSTANCE
+      provide: MSAL_INSTANCE,
       useFactory: MSALInstanceFactory,
     },
-    MsalService, // ให้ MsalService ใช้ MSAL_INSTANCE
+    MsalService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: MsalInterceptor,
       multi: true,
+    },
+    { provide: HTTP_INTERCEPTORS,
+      useClass: loginInterceptor,
+      multi: true
     },
   ],
   bootstrap: [AppComponent],

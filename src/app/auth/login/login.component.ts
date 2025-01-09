@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { firstValueFrom } from 'rxjs';
 import { LoginService } from './login.service';
+import {jwtDecode} from 'jwt-decode';
 
 @Component({
   selector: 'app-login',
@@ -30,31 +31,29 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.msalService.initialize();
-    this.clearLoginState();
-    this.sv.getUser().subscribe((res) => {
-      this.userAll = res;
-      console.log(this.userAll);
-    });
-    this.authService.authState.subscribe((user) => {
-      this.user = user;
-      this.loggedIn = (user != null);
-      if (this.loggedIn) {
-        // กำหนด Role ผู้ใช้ (ตัวอย่าง)
-        this.AccessToken();
-        const userRole = user.id == '114655793156976911639' ? 'Admin' : 'User';
+    const accessToken = localStorage.getItem('accessToken');
+    if (accessToken) {
+      this.msalService.initialize();
+      this.clearLoginState();
+      this.sv.getUser().subscribe((res) => {
+        this.userAll = res;
+        console.log(this.userAll);
+      });
+      this.authService.authState.subscribe((user) => {
+        this.user = user;
+        this.loggedIn = (user != null);
+        if (this.loggedIn) {
+          // กำหนด Role ผู้ใช้
+          const userRole = user.id == '104502146614369152099' ? 'Admin' : 'User';
 
-        // เก็บ Role ลงใน LocalStorage
-        sessionStorage.setItem('userRole', userRole);
-
+          // เก็บ Role ลงใน sessionStorage
+          sessionStorage.setItem('userRole', userRole);
 
         // ตรวจสอบ Role และนำทาง
         if (userRole == 'Admin') {
-          this.AccessToken();
           this.isAdmin = true;
-          
-          this.router.navigate(['admin/dashboard'], { state: { name: user.name, role: userRole } 
-          })
+          this.router.navigate(['admin/dashboard'], { queryParams: { name: user.name, role: userRole } 
+          });
            // เส้นทางสำหรับผู้ดูแลระบบ
         } else if (userRole == 'User') {
           this.isAdmin = false;
@@ -67,26 +66,18 @@ export class LoginComponent implements OnInit {
           user_role: userRole,
         });
 
-      } else {
-        this.isAdmin = false;
-        sessionStorage.removeItem('userRole');
-      }
-
-    console.log('User:', this.user , 'Role:', sessionStorage.getItem('userRole'));
+        } else {
+          this.isAdmin = false;
+          sessionStorage.removeItem('userRole');
+        }
       });
+    }
   }
-  AccessToken(): void {
-    this.authService.getAccessToken(GoogleLoginProvider.PROVIDER_ID).then(accessToken => {
-      this.accessToken = accessToken;
-      console.log('Access Token:', this.accessToken);
-    });
-  }
-  
   checkUsergoogle(user: any): void {
     // ตรวจสอบว่ามีข้อมูลผู้ใช้ทั้งหมดหรือไม่
     // ค้นหาผู้ใช้ในฐานข้อมูล
     const checkUser = this.userAll.find((u: any) => u.name === user.name);
-  
+
     if (checkUser) {
       console.log(user.name, 'พบผู้ใช้งานแล้ว');
       sessionStorage.setItem('user_id', this.user_id||checkUser.user_id);
@@ -100,11 +91,20 @@ export class LoginComponent implements OnInit {
           console.error('เกิดข้อผิดพลาดในการส่งข้อมูลผู้ใช้ไปยัง backend:', error);
         }
       );
-      
     }
   }
 
-  
+  sendUserDataToBackend(data:any): void {
+  this.sv.addUser(data).subscribe(
+    (response: any) => {
+      console.log('User data successfully sent to backend:', response);
+    },
+    (error: any) => {
+      console.error('Error sending user data to backend:', error);
+    }
+  );
+}
+
   clearLoginState(): void {
     this.isLoading = false;
     this.inProgress = false;
@@ -133,6 +133,21 @@ export class LoginComponent implements OnInit {
     const user = await firstValueFrom(
       this.msalService.loginPopup(loginRequest)
     );
+    console.log(user,"user");
+    localStorage.setItem('accessToken', user.accessToken);
+    console.log(localStorage.getItem('accessToken'));
+
+
+    this.loggedIn = (user != null);
+    if (this.loggedIn) {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        const decoded : any = jwtDecode(user.idToken);
+        console.log(decoded, "decoded");
+        console.log(decoded.roles);
+        localStorage.setItem('jwtDecodeUserRole', decoded.roles[0] || 'User');
+      }
+    }
 
     this.checkUser(user);
 
@@ -153,7 +168,7 @@ export class LoginComponent implements OnInit {
       if (user.idTokenClaims.roles) {
         if (user.idTokenClaims.roles.includes('Admin')) {
           console.log('User is an Admin');
-          this.router.navigate(['admin/dashboard']) ,{ queryParams: { name: user.name, role: user.idTokenClaims.roles }}
+          this.router.navigate(['admin/dashboard'] ,{ queryParams: { name: user.account.name, role: user.idTokenClaims.roles }});
         } else if (user.idTokenClaims.roles.includes('User')) {
           console.log('User is a User');
           this.router.navigate(['user']);
@@ -162,8 +177,8 @@ export class LoginComponent implements OnInit {
         console.log('No roles');
         this.router.navigate(['user']);
       }
-      sessionStorage.setItem('user_id', this.user_id||checkUser.user_id);
-      sessionStorage.setItem('userRole', user.idTokenClaims.roles || 'User');
+      localStorage.setItem('user_id', this.user_id||checkUser.user_id);
+      localStorage.setItem('userRole', user.idTokenClaims.roles || 'User');
     } else {
       const data = {
         user_id: null,
@@ -179,9 +194,8 @@ export class LoginComponent implements OnInit {
         this.user_id = res
         console.log(this.user_id);
 
-        sessionStorage.setItem('user_id', this.user_id||checkUser.user_id);
-        // sessionStorage.setItem('userRole', user.idTokenClaims.roles || 'User');
-        sessionStorage.setItem('userRole', data.user_role);
+        localStorage.setItem('user_id', this.user_id||checkUser.user_id);
+        localStorage.setItem('userRole', data.user_role);
       });
 
       const role = sessionStorage.getItem('userRole');

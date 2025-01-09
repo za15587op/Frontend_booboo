@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
   loggedIn: any;
   user_id:any
   isAdmin : any;
- 
+
   constructor(
     private authService: SocialAuthService,
     private msalService: MsalService,
@@ -49,9 +49,8 @@ export class LoginComponent implements OnInit {
         // ตรวจสอบ Role และนำทาง
         if (userRole == 'Admin') {
           this.isAdmin = true;
-          
-          this.router.navigate(['admin/dashboard'], { state: { name: user.name, role: userRole } 
-          })
+          this.router.navigate(['admin/dashboard'], { queryParams: { name: user.name, role: userRole } 
+          });
            // เส้นทางสำหรับผู้ดูแลระบบ
         } else if (userRole == 'User') {
           this.isAdmin = false;
@@ -97,11 +96,20 @@ export class LoginComponent implements OnInit {
           console.error('เกิดข้อผิดพลาดในการส่งข้อมูลผู้ใช้ไปยัง backend:', error);
         }
       );
-      
     }
   }
 
-  
+  sendUserDataToBackend(data:any): void {
+  this.sv.addUser(data).subscribe(
+    (response: any) => {
+      console.log('User data successfully sent to backend:', response);
+    },
+    (error: any) => {
+      console.error('Error sending user data to backend:', error);
+    }
+  );
+}
+
   clearLoginState(): void {
     this.isLoading = false;
     this.inProgress = false;
@@ -116,7 +124,6 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    this.clearLoginState();
     this.isLoading = true;
     this.inProgress = true;
 
@@ -130,11 +137,25 @@ export class LoginComponent implements OnInit {
     const user = await firstValueFrom(
       this.msalService.loginPopup(loginRequest)
     );
+    console.log(user,"user");
+    localStorage.setItem('accessToken', user.accessToken);
+    console.log(localStorage.getItem('accessToken'));
+
+
+    this.loggedIn = (user != null);
+    if (this.loggedIn) {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        const decoded : any = jwtDecode(user.idToken);
+        console.log(decoded, "decoded");
+        console.log(decoded.roles);
+        localStorage.setItem('jwtDecodeUserRole', decoded.roles[0] || 'User');
+      }
+    }
 
     this.checkUser(user);
 
     this.msalService.instance.setActiveAccount(user.account);
-    this.clearLoginState();
   }
 
   isLoggedIn(): boolean {
@@ -182,6 +203,7 @@ export class LoginComponent implements OnInit {
       });
 
       const role = sessionStorage.getItem('userRole');
+
       if (role == 'Admin') {
         this.router.navigate(['admin/dashboard']);
       } else if (role == 'User') {
@@ -190,3 +212,7 @@ export class LoginComponent implements OnInit {
     }
   }
 }
+function jwtDecode(idToken: string): any {
+  throw new Error('Function not implemented.');
+}
+

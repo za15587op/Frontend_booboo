@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { firstValueFrom } from 'rxjs';
 import { LoginService } from './login.service';
-import {jwtDecode} from 'jwt-decode';
 
 @Component({
   selector: 'app-login',
@@ -29,10 +28,10 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.msalService.initialize();
     const accessToken = localStorage.getItem('accessToken');
     if (accessToken) {
-      this.msalService.initialize();
-      this.clearLoginState();
+
       this.sv.getUser().subscribe((res) => {
         this.userAll = res;
         console.log(this.userAll);
@@ -94,21 +93,11 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  clearLoginState(): void {
-    this.isLoading = false;
-    this.inProgress = false;
-    if (this.loginTimeout) {
-      clearTimeout(this.loginTimeout);
-      this.loginTimeout = null;
-    }
-  }
-
   async loginWithMicrosoft() {
     if (this.inProgress || this.isLoading) {
       return;
     }
 
-    this.clearLoginState();
     this.isLoading = true;
     this.inProgress = true;
 
@@ -126,22 +115,9 @@ export class LoginComponent implements OnInit {
     localStorage.setItem('accessToken', user.accessToken);
     console.log(localStorage.getItem('accessToken'));
 
-
-    this.loggedIn = (user != null);
-    if (this.loggedIn) {
-      const token = localStorage.getItem('accessToken');
-      if (token) {
-        const decoded : any = jwtDecode(user.idToken);
-        console.log(decoded, "decoded");
-        console.log(decoded.roles);
-        localStorage.setItem('jwtDecodeUserRole', decoded.roles[0] || 'User');
-      }
-    }
-
     this.checkUser(user);
 
     this.msalService.instance.setActiveAccount(user.account);
-    this.clearLoginState();
   }
 
   isLoggedIn(): boolean {
@@ -187,7 +163,9 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('userRole', data.user_role);
       });
 
+      // localStorage.setItem('user_id', this.user_id||checkUser.user_id);
       const role = sessionStorage.getItem('userRole');
+
       if (role == 'Admin') {
         this.router.navigate(['admin/dashboard']);
       } else if (role == 'User') {

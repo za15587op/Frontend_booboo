@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit {
         // ตรวจสอบ Role และนำทาง
         if (userRole == 'Admin') {
           this.isAdmin = true;
-          this.router.navigate(['admin/dashboard'], { queryParams: { name: user.name, role: userRole }
+          this.router.navigate(['admin/dashboard'], { state: { name: user.name, role: userRole }
           });
            // เส้นทางสำหรับผู้ดูแลระบบ
         } else if (userRole == 'User') {
@@ -89,6 +89,7 @@ export class LoginComponent implements OnInit {
     this.authService.getAccessToken(GoogleLoginProvider.PROVIDER_ID).then(accessToken => {
       this.accessToken = accessToken;
       console.log('Access Token:', this.accessToken);
+      localStorage.setItem('accessToken',this.accessToken);
     });
   }
 

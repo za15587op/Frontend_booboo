@@ -49,7 +49,7 @@ export class LoginComponent implements OnInit {
         // ตรวจสอบ Role และนำทาง
         if (userRole == 'Admin') {
           this.isAdmin = true;
-          this.router.navigate(['admin/dashboard'], { queryParams: { name: user.name, role: userRole } 
+          this.router.navigate(['admin/dashboard'], { state: { name: user.name, role: userRole } 
           });
            // เส้นทางสำหรับผู้ดูแลระบบ
         } else if (userRole == 'User') {

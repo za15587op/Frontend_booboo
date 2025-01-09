@@ -19,7 +19,8 @@ const routes: Routes = [
   {path: "admin/uploadfile", component: UploadFileComponent, canActivate : [LoginGuard]},
   {path: "admin-info", component: AdminFileINFOComponent},
   {path: "admin/DataStored", component: DataStoredComponent, resolve :{getDataFileResolve}},
-  {path: "user", component: UserComponent}
+  {path: "user", component: UserComponent},
+  { path: 'auth/callback', component: LoginComponent },
 ];
 
 @NgModule({

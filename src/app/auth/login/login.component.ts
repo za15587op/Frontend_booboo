@@ -1,6 +1,6 @@
 import { GoogleLoginProvider, SocialAuthService } from '@abacritt/angularx-social-login';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { firstValueFrom } from 'rxjs';
 import { LoginService } from './login.service';
@@ -26,14 +26,13 @@ export class LoginComponent implements OnInit {
     private authService: SocialAuthService,
     private msalService: MsalService,
     private router: Router,
-    private sv: LoginService
+    private sv: LoginService,
+    private route:ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.msalService.initialize();
-    const accessToken = localStorage.getItem('accessToken');
-    if (accessToken) {
-
+    this.checkAccessToken();
       this.sv.getUser().subscribe((res) => {
         this.userAll = res;
         console.log(this.userAll);
@@ -70,7 +69,18 @@ export class LoginComponent implements OnInit {
           sessionStorage.removeItem('userRole');
         }
       });
-    }
+      //github
+      this.route.queryParams.subscribe((params) => {
+        const code = params['code'];
+        if (code) {
+          this.sv.exchangeCodeForToken(code).subscribe((response: any) => {
+            console.log('Access Token:', response.access_token);
+            // Handle the token (e.g., save it, redirect, etc.)
+            this.router.navigate(['/']);
+          });
+        }
+      });
+
   }
   checkUsergoogle(user: any): void {
     // ตรวจสอบว่ามีข้อมูลผู้ใช้ทั้งหมดหรือไม่
@@ -170,9 +180,35 @@ export class LoginComponent implements OnInit {
       } else if (role == 'User') {
         this.router.navigate(['user']);
       }
+    }
+  }
 
+
+   checkAccessToken() {
+    const accessToken = localStorage.getItem('accessToken');
+    const userRole = localStorage.getItem('userRole');
+    const userName = localStorage.getItem('userName');
+
+    if (accessToken) {
+        const response = firstValueFrom(this.sv.getUser());
+        this.userAll = response;
+
+        const account = this.msalService.instance.getAllAccounts()[0];
+        if (account) {
+          this.msalService.instance.setActiveAccount(account);
+        }
+
+        if (userRole == 'Admin') {
+          this.router.navigate(['admin/dashboard'], {
+            queryParams: { name: userName, role: userRole }
+          });
+        } else {
+          this.router.navigate(['user']);
+        }
+      }
     }
 
-
-  }
+    loginWithGitHub(){
+      this.sv.loginWithGitHub();
+    }
 }

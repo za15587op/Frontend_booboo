@@ -163,7 +163,6 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('userRole', data.user_role);
       });
 
-      // localStorage.setItem('user_id', this.user_id||checkUser.user_id);
       const role = sessionStorage.getItem('userRole');
 
       if (role == 'Admin') {

@@ -211,4 +211,8 @@ export class LoginComponent implements OnInit {
     loginWithGitHub(){
       this.sv.loginWithGitHub();
     }
+
+
+
+
 }

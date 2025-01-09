@@ -64,7 +64,7 @@ export function MSALInstanceFactory(): IPublicClientApplication {
           {
             id: GoogleLoginProvider.PROVIDER_ID,
             provider: new GoogleLoginProvider('978135281931-l3vsfqem6c1oj6htbmqngg2ot7akd7e1.apps.googleusercontent.com',{
-              scopes: ['email','profile'] ,prompt: 'consent' // หรือ 'none'
+              scopes: ['email','profile'] ,prompt: 'none' // หรือ 'none'
             } ,), // Google Client ID
           },
         ],

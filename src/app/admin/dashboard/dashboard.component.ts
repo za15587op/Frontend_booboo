@@ -16,6 +16,8 @@ export class DashBoardComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
+      console.log(params,"params");
+
       this.Name = params['name'] || 'Admin'; // ค่า default เป็น 'Admin'
       this.Role = params['role'] || 'Unknown Role'; // ค่า default เป็น 'Unknown Role'
       console.log('ชื่อผู้ดูแลระบบ:', this.Name);

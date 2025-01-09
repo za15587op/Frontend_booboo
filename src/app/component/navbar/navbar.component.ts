@@ -41,7 +41,9 @@ export class NavbarComponent implements OnInit {
     }
 
   logout() {
-    sessionStorage.removeItem('user_id');
+    localStorage.removeItem('user_id');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('userRole');
 
     if (this.msalService.instance.getActiveAccount()) {
       firstValueFrom(this.msalService.logout());

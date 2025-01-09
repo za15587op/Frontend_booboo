@@ -1,6 +1,6 @@
 import { GoogleLoginProvider, SocialAuthService } from '@abacritt/angularx-social-login';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { firstValueFrom } from 'rxjs';
 import { LoginService } from './login.service';
@@ -26,30 +26,32 @@ export class LoginComponent implements OnInit {
     private authService: SocialAuthService,
     private msalService: MsalService,
     private router: Router,
-    private sv: LoginService
+    private sv: LoginService,
+    private route:ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.msalService.initialize();
-    this.clearLoginState();
-    this.sv.getUser().subscribe((res) => {
-      this.userAll = res;
-      console.log(this.userAll);
-    });
-    this.authService.authState.subscribe((user) => {
-      this.user = user;
-      this.loggedIn = (user != null);
-      if (this.loggedIn) {
-        // กำหนด Role ผู้ใช้ (ตัวอย่าง)
-        this.AccessToken();
-        const userRole = user.id == '114655793156976911639' ? 'Admin' : 'User';
-        // เก็บ Role ลงใน LocalStorage
-        sessionStorage.setItem('userRole', userRole);
+    this.checkAccessToken();
+      this.sv.getUser().subscribe((res) => {
+        this.userAll = res;
+        console.log(this.userAll);
+      });
+      this.authService.authState.subscribe((user) => {
+        this.user = user;
+        this.loggedIn = (user != null);
+        if (this.loggedIn) {
+          // กำหนด Role ผู้ใช้
+          this.AccessToken();
+          const userRole = user.id == '104502146614369152099' ? 'Admin' : 'User';
+
+          // เก็บ Role ลงใน sessionStorage
+          sessionStorage.setItem('userRole', userRole);
 
         // ตรวจสอบ Role และนำทาง
         if (userRole == 'Admin') {
           this.isAdmin = true;
-          this.router.navigate(['admin/dashboard'], { state: { name: user.name, role: userRole } 
+          this.router.navigate(['admin/dashboard'], { state: { name: user.name, role: userRole }
           });
            // เส้นทางสำหรับผู้ดูแลระบบ
         } else if (userRole == 'User') {
@@ -70,19 +72,32 @@ export class LoginComponent implements OnInit {
 
     console.log('User:', this.user , 'Role:', sessionStorage.getItem('userRole'));
       });
+      //github
+      this.route.queryParams.subscribe((params) => {
+        const code = params['code'];
+        if (code) {
+          this.sv.exchangeCodeForToken(code).subscribe((response: any) => {
+            console.log('Access Token:', response.access_token);
+            // Handle the token (e.g., save it, redirect, etc.)
+            this.router.navigate(['/']);
+          });
+        }
+      });
+
   }
   AccessToken(): void {
     this.authService.getAccessToken(GoogleLoginProvider.PROVIDER_ID).then(accessToken => {
       this.accessToken = accessToken;
       console.log('Access Token:', this.accessToken);
+      localStorage.setItem('accessToken',this.accessToken);
     });
   }
-  
+
   checkUsergoogle(user: any): void {
     // ตรวจสอบว่ามีข้อมูลผู้ใช้ทั้งหมดหรือไม่
     // ค้นหาผู้ใช้ในฐานข้อมูล
     const checkUser = this.userAll.find((u: any) => u.name === user.name);
-  
+
     if (checkUser) {
       console.log(user.name, 'พบผู้ใช้งานแล้ว');
       sessionStorage.setItem('user_id', this.user_id||checkUser.user_id);
@@ -211,6 +226,39 @@ export class LoginComponent implements OnInit {
       }
     }
   }
+
+
+   checkAccessToken() {
+    const accessToken = localStorage.getItem('accessToken');
+    const userRole = localStorage.getItem('userRole');
+    const userName = localStorage.getItem('userName');
+
+    if (accessToken) {
+        const response = firstValueFrom(this.sv.getUser());
+        this.userAll = response;
+
+        const account = this.msalService.instance.getAllAccounts()[0];
+        if (account) {
+          this.msalService.instance.setActiveAccount(account);
+        }
+
+        if (userRole == 'Admin') {
+          this.router.navigate(['admin/dashboard'], {
+            queryParams: { name: userName, role: userRole }
+          });
+        } else {
+          this.router.navigate(['user']);
+        }
+      }
+    }
+
+    loginWithGitHub(){
+      this.sv.loginWithGitHub();
+    }
+
+
+
+
 }
 function jwtDecode(idToken: string): any {
   throw new Error('Function not implemented.');

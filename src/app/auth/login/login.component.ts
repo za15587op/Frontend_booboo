@@ -42,6 +42,7 @@ export class LoginComponent implements OnInit {
         this.loggedIn = (user != null);
         if (this.loggedIn) {
           // กำหนด Role ผู้ใช้
+          this.AccessToken();
           const userRole = user.id == '104502146614369152099' ? 'Admin' : 'User';
 
           // เก็บ Role ลงใน sessionStorage
@@ -64,10 +65,12 @@ export class LoginComponent implements OnInit {
           user_role: userRole,
         });
 
-        } else {
-          this.isAdmin = false;
-          sessionStorage.removeItem('userRole');
-        }
+      } else {
+        this.isAdmin = false;
+        sessionStorage.removeItem('userRole');
+      }
+
+    console.log('User:', this.user , 'Role:', sessionStorage.getItem('userRole'));
       });
       //github
       this.route.queryParams.subscribe((params) => {
@@ -82,6 +85,13 @@ export class LoginComponent implements OnInit {
       });
 
   }
+  AccessToken(): void {
+    this.authService.getAccessToken(GoogleLoginProvider.PROVIDER_ID).then(accessToken => {
+      this.accessToken = accessToken;
+      console.log('Access Token:', this.accessToken);
+    });
+  }
+
   checkUsergoogle(user: any): void {
     // ตรวจสอบว่ามีข้อมูลผู้ใช้ทั้งหมดหรือไม่
     // ค้นหาผู้ใช้ในฐานข้อมูล
@@ -100,6 +110,26 @@ export class LoginComponent implements OnInit {
           console.error('เกิดข้อผิดพลาดในการส่งข้อมูลผู้ใช้ไปยัง backend:', error);
         }
       );
+    }
+  }
+
+  sendUserDataToBackend(data:any): void {
+  this.sv.addUser(data).subscribe(
+    (response: any) => {
+      console.log('User data successfully sent to backend:', response);
+    },
+    (error: any) => {
+      console.error('Error sending user data to backend:', error);
+    }
+  );
+}
+
+  clearLoginState(): void {
+    this.isLoading = false;
+    this.inProgress = false;
+    if (this.loginTimeout) {
+      clearTimeout(this.loginTimeout);
+      this.loginTimeout = null;
     }
   }
 
@@ -125,6 +155,18 @@ export class LoginComponent implements OnInit {
     localStorage.setItem('accessToken', user.accessToken);
     console.log(localStorage.getItem('accessToken'));
 
+
+    this.loggedIn = (user != null);
+    if (this.loggedIn) {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        const decoded : any = jwtDecode(user.idToken);
+        console.log(decoded, "decoded");
+        console.log(decoded.roles);
+        localStorage.setItem('jwtDecodeUserRole', decoded.roles[0] || 'User');
+      }
+    }
+
     this.checkUser(user);
 
     this.msalService.instance.setActiveAccount(user.account);
@@ -143,7 +185,7 @@ export class LoginComponent implements OnInit {
       if (user.idTokenClaims.roles) {
         if (user.idTokenClaims.roles.includes('Admin')) {
           console.log('User is an Admin');
-          this.router.navigate(['admin/dashboard'] ,{ queryParams: { name: user.account.name, role: user.idTokenClaims.roles }});
+          this.router.navigate(['admin/dashboard']) ,{ state : { name: user.name, role: user.idTokenClaims.roles }}
         } else if (user.idTokenClaims.roles.includes('User')) {
           console.log('User is a User');
           this.router.navigate(['user']);
@@ -152,8 +194,8 @@ export class LoginComponent implements OnInit {
         console.log('No roles');
         this.router.navigate(['user']);
       }
-      localStorage.setItem('user_id', this.user_id||checkUser.user_id);
-      localStorage.setItem('userRole', user.idTokenClaims.roles || 'User');
+      sessionStorage.setItem('user_id', this.user_id||checkUser.user_id);
+      sessionStorage.setItem('userRole', user.idTokenClaims.roles || 'User');
     } else {
       const data = {
         user_id: null,
@@ -169,8 +211,9 @@ export class LoginComponent implements OnInit {
         this.user_id = res
         console.log(this.user_id);
 
-        localStorage.setItem('user_id', this.user_id||checkUser.user_id);
-        localStorage.setItem('userRole', data.user_role);
+        sessionStorage.setItem('user_id', this.user_id||checkUser.user_id);
+        // sessionStorage.setItem('userRole', user.idTokenClaims.roles || 'User');
+        sessionStorage.setItem('userRole', data.user_role);
       });
 
       const role = sessionStorage.getItem('userRole');
@@ -216,3 +259,7 @@ export class LoginComponent implements OnInit {
 
 
 }
+function jwtDecode(idToken: string): any {
+  throw new Error('Function not implemented.');
+}
+

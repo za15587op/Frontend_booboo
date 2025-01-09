@@ -13,19 +13,30 @@
                         <th>ชื่อ</th>
                         <th>เจ้าของ</th>
                         <th>วันที่อัปโหลด</th>
-                        <th>ดาวน์โหลด</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
+                    
                     @for (item of data; track $index) {
                     <tr>
                         <td><i class="bi bi-file-pdf text-danger me-2"></i>{{item.file_name}}</td>
                         <td>{{item.name}}</td>
                         <td>{{item.created_at | date: 'EEE/dd/MM/YYYY'}}</td>
-                        <td><a (click)="downloadFile(item.file, item.file_name)">ดาวน์โหลด</a></td>
+                        <!-- <td><a (click)="downloadFile(item.file, item.file_name)">ดาวน์โหลด</a></td>
                         <td><i class="bi bi-three-dots-vertical"></i></td>
-                        <button (click)="deleteFile(item.file_id)">ลบ</button>
+                        <button (click)="deleteFile(item.file_id)">ลบ</button> -->
+                        <td>
+                            <div class="dropdown">
+                              <i class="bi bi-three-dots-vertical" (click)="toggleDropdown(item.file_id)"></i>
+                              @if (dropdownOpen[item.file_id]) {
+                                <div class="dropdown-menu">
+                                  <a (click)="downloadFile(item.file, item.file_name)">ดาวน์โหลด</a>
+                                  <button (click)="deleteFile(item.file_id)">ลบ</button>
+                                </div>
+                              }
+                            </div>
+                          </td>
                     </tr>
                 }
                 </tbody>

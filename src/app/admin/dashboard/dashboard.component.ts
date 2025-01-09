@@ -12,16 +12,15 @@ export class DashBoardComponent implements OnInit {
   Name: string | null = null;
   Role: string | null = null;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor() {}
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
-      console.log(params,"params");
-
-      this.Name = params['name'] || 'Admin'; // ค่า default เป็น 'Admin'
-      this.Role = params['role'] || 'Unknown Role'; // ค่า default เป็น 'Unknown Role'
+    const state = history.state;
+    if (state) {
+      this.Name = state.name || 'Admin';
+      this.Role = state.role || 'Unknown Role';
       console.log('ชื่อผู้ดูแลระบบ:', this.Name);
       console.log('Role ผู้ใช้งาน:', this.Role);
-    });
+    }
   }
 }

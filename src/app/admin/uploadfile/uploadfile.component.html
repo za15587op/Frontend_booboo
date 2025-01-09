@@ -1,18 +1,24 @@
 <app-navbar />
 <section>
-    <div class="text-center py-5" >
+    <div class="text-center py-5">
         <h3 class="mt-2">อัปโหลดเอกสาร<br>กรุณาอัปโหลดไฟล์ PDF PNG JPG เท่านั้น</h3>
         <div class="border border-dashed rounded p-5 mt-4 d-inline-block bg-white w-100"
              style="max-width: 1100px; height: auto;">
-             <a  class = "text-decoration-none text-center fw-bold text-dark ">
+            <label class="text-decoration-none text-center fw-bold text-dark w-100"
+                   style="cursor: pointer;">
                 <div class="text-center">
                     <i class="bi bi-file-earmark-arrow-up fs-1 text-secondary"></i>
                     <p class="mb-0 text-secondary mt-4"
-                    style="font-size: 1.25rem; font-weight: bold;">
+                       style="font-size: 1.25rem; font-weight: bold;">
                         Click here or drop files to upload or transfer
                     </p>
                 </div>
-            </a>
+                <input class="form-control d-none" 
+                       type="file" 
+                       (change)="onFileChange($event)" 
+                       multiple="true">
+            </label>
+            <button (click)="upload()">ok</button>
         </div>
     </div>
     <div>

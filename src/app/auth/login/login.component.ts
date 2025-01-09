@@ -1,4 +1,4 @@
-import { SocialAuthService } from '@abacritt/angularx-social-login';
+import { GoogleLoginProvider, SocialAuthService } from '@abacritt/angularx-social-login';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
@@ -13,6 +13,7 @@ import { LoginService } from './login.service';
 })
 export class LoginComponent implements OnInit {
   userAll: any;
+  accessToken: string = '';
   user: any;
   isLoading = false;
   inProgress = false;
@@ -20,6 +21,7 @@ export class LoginComponent implements OnInit {
   loggedIn: any;
   user_id:any
   isAdmin : any;
+
   constructor(
     private authService: SocialAuthService,
     private msalService: MsalService,
@@ -46,33 +48,30 @@ export class LoginComponent implements OnInit {
           // เก็บ Role ลงใน sessionStorage
           sessionStorage.setItem('userRole', userRole);
 
-          // ตรวจสอบ Role และนำทาง
-          if (userRole == 'Admin') {
-            this.isAdmin = true;
-            this.router.navigate(['admin/dashboard'], { queryParams: { name: user.name, role: userRole } });
-          } else if (userRole == 'User') {
-            this.isAdmin = false;
-            this.router.navigate(['user']);
-          }
-
-          // ตรวจสอบผู้ใช้ในระบบ
-          this.checkUsergoogle({
-            user_id: null,
-            username: user.email,
-            name: user.name,
-            user_role: userRole,
+        // ตรวจสอบ Role และนำทาง
+        if (userRole == 'Admin') {
+          this.isAdmin = true;
+          this.router.navigate(['admin/dashboard'], { queryParams: { name: user.name, role: userRole }
           });
+           // เส้นทางสำหรับผู้ดูแลระบบ
+        } else if (userRole == 'User') {
+          this.isAdmin = false;
+          this.router.navigate(['user']);
+        }
+        this.checkUsergoogle({
+          user_id: null,
+          username: user.email,
+          name: user.name,
+          user_role: userRole,
+        });
 
         } else {
           this.isAdmin = false;
           sessionStorage.removeItem('userRole');
         }
       });
-    } else {
-      this.router.navigate(['/login']);
     }
   }
-
   checkUsergoogle(user: any): void {
     // ตรวจสอบว่ามีข้อมูลผู้ใช้ทั้งหมดหรือไม่
     // ค้นหาผู้ใช้ในฐานข้อมูล
@@ -80,6 +79,7 @@ export class LoginComponent implements OnInit {
 
     if (checkUser) {
       console.log(user.name, 'พบผู้ใช้งานแล้ว');
+      sessionStorage.setItem('user_id', this.user_id||checkUser.user_id);
     } else {
       console.log('ไม่พบผู้ใช้งาน ทำการเพิ่มข้อมูลผู้ใช้');
       this.sv.addUser(user).subscribe(

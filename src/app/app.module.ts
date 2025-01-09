@@ -62,7 +62,9 @@ export function MSALInstanceFactory(): IPublicClientApplication {
         providers: [
           {
             id: GoogleLoginProvider.PROVIDER_ID,
-            provider: new GoogleLoginProvider('978135281931-l3vsfqem6c1oj6htbmqngg2ot7akd7e1.apps.googleusercontent.com'), // Google Client ID
+            provider: new GoogleLoginProvider('978135281931-l3vsfqem6c1oj6htbmqngg2ot7akd7e1.apps.googleusercontent.com',{
+              scopes: ['email','profile'] ,prompt: 'consent' // หรือ 'none'
+            } ,), // Google Client ID
           },
         ],
       } as SocialAuthServiceConfig,

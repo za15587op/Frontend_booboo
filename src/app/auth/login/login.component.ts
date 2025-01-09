@@ -1,4 +1,4 @@
-import { SocialAuthService } from '@abacritt/angularx-social-login';
+import { GoogleLoginProvider, SocialAuthService } from '@abacritt/angularx-social-login';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
@@ -13,6 +13,7 @@ import { LoginService } from './login.service';
 })
 export class LoginComponent implements OnInit {
   userAll: any;
+  accessToken: string = '';
   user: any;
   isLoading = false;
   inProgress = false;
@@ -20,6 +21,7 @@ export class LoginComponent implements OnInit {
   loggedIn: any;
   user_id:any
   isAdmin : any;
+ 
   constructor(
     private authService: SocialAuthService,
     private msalService: MsalService,
@@ -39,7 +41,8 @@ export class LoginComponent implements OnInit {
       this.loggedIn = (user != null);
       if (this.loggedIn) {
         // กำหนด Role ผู้ใช้ (ตัวอย่าง)
-        const userRole = user.id == '104502146614369152099' ? 'Admin' : 'User';
+        this.AccessToken();
+        const userRole = user.id == '114655793156976911639' ? 'Admin' : 'User';
 
         // เก็บ Role ลงใน LocalStorage
         sessionStorage.setItem('userRole', userRole);
@@ -47,9 +50,11 @@ export class LoginComponent implements OnInit {
 
         // ตรวจสอบ Role และนำทาง
         if (userRole == 'Admin') {
+          this.AccessToken();
           this.isAdmin = true;
-          this.router.navigate(['admin/dashboard'], { queryParams: { name: user.name, role: userRole } 
-          });
+          
+          this.router.navigate(['admin/dashboard'], { state: { name: user.name, role: userRole } 
+          })
            // เส้นทางสำหรับผู้ดูแลระบบ
         } else if (userRole == 'User') {
           this.isAdmin = false;
@@ -69,8 +74,14 @@ export class LoginComponent implements OnInit {
 
     console.log('User:', this.user , 'Role:', sessionStorage.getItem('userRole'));
       });
-
   }
+  AccessToken(): void {
+    this.authService.getAccessToken(GoogleLoginProvider.PROVIDER_ID).then(accessToken => {
+      this.accessToken = accessToken;
+      console.log('Access Token:', this.accessToken);
+    });
+  }
+  
   checkUsergoogle(user: any): void {
     // ตรวจสอบว่ามีข้อมูลผู้ใช้ทั้งหมดหรือไม่
     // ค้นหาผู้ใช้ในฐานข้อมูล
@@ -78,6 +89,7 @@ export class LoginComponent implements OnInit {
   
     if (checkUser) {
       console.log(user.name, 'พบผู้ใช้งานแล้ว');
+      sessionStorage.setItem('user_id', this.user_id||checkUser.user_id);
     } else {
       console.log('ไม่พบผู้ใช้งาน ทำการเพิ่มข้อมูลผู้ใช้');
       this.sv.addUser(user).subscribe(
@@ -88,20 +100,11 @@ export class LoginComponent implements OnInit {
           console.error('เกิดข้อผิดพลาดในการส่งข้อมูลผู้ใช้ไปยัง backend:', error);
         }
       );
+      
     }
   }
 
-  sendUserDataToBackend(data:any): void {
-  this.sv.addUser(data).subscribe(
-    (response: any) => {
-      console.log('User data successfully sent to backend:', response);
-    },
-    (error: any) => {
-      console.error('Error sending user data to backend:', error);
-    }
-  );
-}
-
+  
   clearLoginState(): void {
     this.isLoading = false;
     this.inProgress = false;

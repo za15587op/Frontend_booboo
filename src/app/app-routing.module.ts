@@ -10,6 +10,7 @@ import { NavbarComponent } from './component/navbar/navbar.component';
 import { DataStoredComponent } from './admin/data-stored/data-stored.component';
 import { getDataFileResolve } from './admin/data-stored/data-stored.resolver';
 import { LoginGuard } from './auth/login/login.guard';
+import { UserManageComponent } from './admin/user-manage/user-manage.component';
 
 
 const routes: Routes = [
@@ -20,7 +21,8 @@ const routes: Routes = [
   {path: "admin-info", component: AdminFileINFOComponent},
   {path: "admin/DataStored", component: DataStoredComponent, resolve :{getDataFileResolve}},
   {path: "user", component: UserComponent},
-  { path: 'auth/callback', component: LoginComponent },
+  {path: 'auth/callback', component: LoginComponent },
+  {path: 'admin/UserManage', component: UserManageComponent, canActivate: [LoginGuard]}
 ];
 
 @NgModule({

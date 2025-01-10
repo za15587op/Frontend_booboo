@@ -45,8 +45,8 @@ export class LoginComponent implements OnInit {
           this.AccessToken();
           const userRole = user.id == '104502146614369152099' ? 'Admin' : 'User';
 
-          // เก็บ Role ลงใน sessionStorage
-          sessionStorage.setItem('userRole', userRole);
+          // เก็บ Role ลงใน localStorage
+          localStorage.setItem('userRole', userRole);
 
         // ตรวจสอบ Role และนำทาง
         if (userRole == 'Admin') {
@@ -67,20 +67,46 @@ export class LoginComponent implements OnInit {
 
       } else {
         this.isAdmin = false;
-        sessionStorage.removeItem('userRole');
+        localStorage.removeItem('userRole');
       }
-
-    console.log('User:', this.user , 'Role:', sessionStorage.getItem('userRole'));
       });
+
       //github
-      this.route.queryParams.subscribe((params) => {
+       this.route.queryParams.subscribe((params) => {
         const code = params['code'];
         if (code) {
           this.sv.exchangeCodeForToken(code).subscribe((response: any) => {
             console.log('Access Token:', response.access_token);
-            // Handle the token (e.g., save it, redirect, etc.)
-            this.router.navigate(['/']);
+            console.log(response);
+
+
+            const checkUser = this.userAll.find(
+              (u: any) => u.username == response.user.login
+            );
+
+            if(!checkUser){
+              const data = {
+                user_id: null,
+                username: response.user.login,
+                name: response.user.name,
+                user_role: 'User',
+              };
+              this.sv.addUser(data).subscribe((res) =>{
+                console.log(res);
+                this.user_id = res
+                console.log(this.user_id);
+                localStorage.setItem('user_id', JSON.stringify(this.user_id));
+                console.log(localStorage.setItem('user_id', JSON.stringify(this.user_id)),"json");
+              })
+            }
+
+            localStorage.setItem('user_id', checkUser.user_id);
+            localStorage.setItem('userRole',checkUser.user_role);
+
+            localStorage.setItem('accessToken',response.access_token);
+            // this.checkAccessToken();
           });
+
         }
       });
 
@@ -100,7 +126,7 @@ export class LoginComponent implements OnInit {
 
     if (checkUser) {
       console.log(user.name, 'พบผู้ใช้งานแล้ว');
-      sessionStorage.setItem('user_id', this.user_id||checkUser.user_id);
+      localStorage.setItem('user_id', this.user_id||checkUser.user_id);
     } else {
       console.log('ไม่พบผู้ใช้งาน ทำการเพิ่มข้อมูลผู้ใช้');
       this.sv.addUser(user).subscribe(
@@ -156,18 +182,6 @@ export class LoginComponent implements OnInit {
     localStorage.setItem('accessToken', user.accessToken);
     console.log(localStorage.getItem('accessToken'));
 
-
-    this.loggedIn = (user != null);
-    if (this.loggedIn) {
-      const token = localStorage.getItem('accessToken');
-      if (token) {
-        const decoded : any = jwtDecode(user.idToken);
-        console.log(decoded, "decoded");
-        console.log(decoded.roles);
-        localStorage.setItem('jwtDecodeUserRole', decoded.roles[0] || 'User');
-      }
-    }
-
     this.checkUser(user);
 
     this.msalService.instance.setActiveAccount(user.account);
@@ -195,8 +209,8 @@ export class LoginComponent implements OnInit {
         console.log('No roles');
         this.router.navigate(['user']);
       }
-      sessionStorage.setItem('user_id', this.user_id||checkUser.user_id);
-      sessionStorage.setItem('userRole', user.idTokenClaims.roles || 'User');
+      localStorage.setItem('user_id', this.user_id||checkUser.user_id);
+      localStorage.setItem('userRole', user.idTokenClaims.roles || 'User');
     } else {
       const data = {
         user_id: null,
@@ -212,12 +226,11 @@ export class LoginComponent implements OnInit {
         this.user_id = res
         console.log(this.user_id);
 
-        sessionStorage.setItem('user_id', this.user_id||checkUser.user_id);
-        // sessionStorage.setItem('userRole', user.idTokenClaims.roles || 'User');
-        sessionStorage.setItem('userRole', data.user_role);
+        localStorage.setItem('user_id', this.user_id||checkUser.user_id);
+        localStorage.setItem('userRole', data.user_role);
       });
 
-      const role = sessionStorage.getItem('userRole');
+      const role = localStorage.getItem('userRole');
 
       if (role == 'Admin') {
         this.router.navigate(['admin/dashboard']);
@@ -257,10 +270,6 @@ export class LoginComponent implements OnInit {
     }
 
 
-
-
 }
-function jwtDecode(idToken: string): any {
-  throw new Error('Function not implemented.');
-}
+
 

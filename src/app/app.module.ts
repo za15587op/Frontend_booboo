@@ -18,6 +18,7 @@ import { UserComponent } from './user/user.component';
 import { DataStoredComponent } from './admin/data-stored/data-stored.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { loginInterceptor } from './auth/login/login.interceptor';
+import { UserManageComponent } from './admin/user-manage/user-manage.component';
 
 export function MSALInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication({
@@ -42,7 +43,8 @@ export function MSALInstanceFactory(): IPublicClientApplication {
     AdminFileINFOComponent,
     NavbarComponent,
     UserComponent,
-    DataStoredComponent
+    DataStoredComponent,
+    UserManageComponent
   ],
   imports: [
     BrowserModule,

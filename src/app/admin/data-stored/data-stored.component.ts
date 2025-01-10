@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DataStoredService } from './data-stored.service';
-
+import * as pako from 'pako';
 @Component({
   selector: 'app-data-stored',
   standalone: false,
@@ -13,10 +13,13 @@ import { DataStoredService } from './data-stored.service';
 export class DataStoredComponent implements OnInit {
   dropdownOpen: { [key: string]: boolean } = {}
   data :any;
+  searchTerm: string = '';
+  SearchData: any = [];
   constructor(private route : ActivatedRoute, private datasv :DataStoredService ,private http : HttpClient){}
 
   ngOnInit(): void {
     this.getdata();
+    this.SData();
   }
 
   downloadFile(fileData: string, fileName: string): void {
@@ -46,7 +49,9 @@ export class DataStoredComponent implements OnInit {
       console.log(this.data)
     })
   }
-
+  download(fileId: string) :void{
+    console.log(`File ID : ${fileId}`);
+  }
   toggleDropdown(fileId: string): void {
     // รีเซ็ต dropdown ทั้งหมดก่อนเปิด dropdown ที่ต้องการ
     this.dropdownOpen = {};
@@ -58,5 +63,30 @@ export class DataStoredComponent implements OnInit {
     if (!target.closest('.dropdown')) {
       this.dropdownOpen = {}; // ปิด dropdown ทั้งหมด
     }
+  }
+  downloaFile(fileId: string) :void{
+    console.log(`File ID : ${fileId}`);
+    this.datasv.downloadflie(fileId).subscribe({
+      next: (response: Blob) => {
+        const downloadUrl = window.URL.createObjectURL(response);
+        const anchor = document.createElement('a');
+        anchor.href = downloadUrl;
+        anchor.download = `file_${fileId}`; // Set file name
+        anchor.click();
+        window.URL.revokeObjectURL(downloadUrl); // Clean up temporary URL
+      },
+      error: (err) => {
+        console.error('Error downloading file:', err);
+      },
+    });
+  }
+  SData(){
+    if (this.searchTerm) {
+      this.SearchData = this.data.filter((item: { file_name?: string }) =>
+        (item.file_name && item.file_name.toLowerCase().includes(this.searchTerm.toLowerCase()))
+      );
+    } else {
+      this.SearchData = this.data; 
+        }
   }
 }

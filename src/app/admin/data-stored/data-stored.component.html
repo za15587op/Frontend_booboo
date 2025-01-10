@@ -4,7 +4,7 @@
         <div class="border rounded shadow p-4">
              <div class = " d-flex justify-content-between">
                 <div class="mb-4 d-flex justify-content-start">
-                    <input type="text" class="form-control" placeholder="ค้นหาเอกสาร" style="border-radius: 1rem; font-size: 18px; width: 600px;">
+                    <input type="text" class="form-control" placeholder="ค้นหาเอกสาร" [(ngModel)]="searchTerm" (ngModelChange)="SData()" style="border-radius: 1rem; font-size: 18px; width: 600px;">
                 </div>
              </div>
             <table class="table">
@@ -18,7 +18,7 @@
                 </thead>
                 <tbody>
                     
-                    @for (item of data; track $index) {
+                    @for (item of SearchData; track $index) {
                     <tr>
                         <td><i class="bi bi-file-pdf text-danger me-2"></i>{{item.file_name}}</td>
                         <td>{{item.name}}</td>
@@ -31,7 +31,7 @@
                               <i class="bi bi-three-dots-vertical" (click)="toggleDropdown(item.file_id)"></i>
                               @if (dropdownOpen[item.file_id]) {
                                 <div class="dropdown-menu">
-                                  <a (click)="downloadFile(item.file, item.file_name)">ดาวน์โหลด</a>
+                                  <a (click)="downloaFile(item.file_id)">ดาวน์โหลด</a>
                                   <button (click)="deleteFile(item.file_id)">ลบ</button>
                                 </div>
                               }

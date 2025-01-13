@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { firstValueFrom } from 'rxjs';
 import { LoginService } from './login.service';
+import { NavbarService } from '../../component/navbar/navbar.service';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,7 @@ export class LoginComponent implements OnInit {
   loginTimeout: any = null;
   loggedIn: any;
   user_id:any
+  role:any
   isAdmin : any;
 
   constructor(
@@ -27,7 +29,8 @@ export class LoginComponent implements OnInit {
     private msalService: MsalService,
     private router: Router,
     private sv: LoginService,
-    private route:ActivatedRoute
+    private route:ActivatedRoute,
+    private sv2: NavbarService
   ) {}
 
   ngOnInit(): void {
@@ -45,13 +48,10 @@ export class LoginComponent implements OnInit {
           this.AccessToken();
           const userRole = user.id == '104502146614369152099' ? 'Admin' : 'User';
 
-          // เก็บ Role ลงใน localStorage
-          localStorage.setItem('userRole', userRole);
-
         // ตรวจสอบ Role และนำทาง
         if (userRole == 'Admin') {
           this.isAdmin = true;
-          this.router.navigate(['admin/dashboard'], { state: { name: user.name, role: userRole }
+          this.router.navigate(['admin'], { state: { name: user.name, role: userRole }
           });
            // เส้นทางสำหรับผู้ดูแลระบบ
         } else if (userRole == 'User') {
@@ -67,18 +67,17 @@ export class LoginComponent implements OnInit {
 
       } else {
         this.isAdmin = false;
-        localStorage.removeItem('userRole');
       }
       });
 
       //github
        this.route.queryParams.subscribe((params) => {
+        console.log(params)
         const code = params['code'];
         if (code) {
           this.sv.exchangeCodeForToken(code).subscribe((response: any) => {
             console.log('Access Token:', response.access_token);
             console.log(response);
-
 
             const checkUser = this.userAll.find(
               (u: any) => u.username == response.user.login
@@ -96,15 +95,18 @@ export class LoginComponent implements OnInit {
                 this.user_id = res
                 console.log(this.user_id);
                 localStorage.setItem('user_id', JSON.stringify(this.user_id));
-                console.log(localStorage.setItem('user_id', JSON.stringify(this.user_id)),"json");
+
+                this.role = data.user_role;
+                console.log(this.role);
               })
             }
 
-            localStorage.setItem('user_id', checkUser.user_id);
-            localStorage.setItem('userRole',checkUser.user_role);
+            this.role = checkUser.user_role;
+            console.log(this.role);
 
+            localStorage.setItem('user_id', checkUser.user_id);
             localStorage.setItem('accessToken',response.access_token);
-            // this.checkAccessToken();
+            this.checkAccessToken();
           });
 
         }
@@ -192,7 +194,7 @@ export class LoginComponent implements OnInit {
   }
 
   checkUser(user: any) {
-    const checkUser = this.userAll.find(
+    const checkUser = this.userAll?.find(
       (u: any) => u.username == user.account.username
     );
 
@@ -200,7 +202,7 @@ export class LoginComponent implements OnInit {
       if (user.idTokenClaims.roles) {
         if (user.idTokenClaims.roles.includes('Admin')) {
           console.log('User is an Admin');
-          this.router.navigate(['admin/dashboard']) ,{ state : { name: user.name, role: user.idTokenClaims.roles }}
+          this.router.navigate(['admin']) ,{ state : { name: user.name, role: user.idTokenClaims.roles }}
         } else if (user.idTokenClaims.roles.includes('User')) {
           console.log('User is a User');
           this.router.navigate(['user']);
@@ -210,7 +212,11 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['user']);
       }
       localStorage.setItem('user_id', this.user_id||checkUser.user_id);
-      localStorage.setItem('userRole', user.idTokenClaims.roles || 'User');
+
+      this.role = checkUser.user_role;
+      console.log(this.role);
+
+
     } else {
       const data = {
         user_id: null,
@@ -227,14 +233,12 @@ export class LoginComponent implements OnInit {
         console.log(this.user_id);
 
         localStorage.setItem('user_id', this.user_id||checkUser.user_id);
-        localStorage.setItem('userRole', data.user_role);
       });
 
-      const role = localStorage.getItem('userRole');
 
-      if (role == 'Admin') {
-        this.router.navigate(['admin/dashboard']);
-      } else if (role == 'User') {
+      if (checkUser.user_role == 'Admin') {
+        this.router.navigate(['admin']);
+      } else if (checkUser.user_role == 'User') {
         this.router.navigate(['user']);
       }
     }
@@ -243,8 +247,8 @@ export class LoginComponent implements OnInit {
 
    checkAccessToken() {
     const accessToken = localStorage.getItem('accessToken');
-    const userRole = localStorage.getItem('userRole');
     const userName = localStorage.getItem('userName');
+
 
     if (accessToken) {
         const response = firstValueFrom(this.sv.getUser());
@@ -255,9 +259,9 @@ export class LoginComponent implements OnInit {
           this.msalService.instance.setActiveAccount(account);
         }
 
-        if (userRole == 'Admin') {
-          this.router.navigate(['admin/dashboard'], {
-            queryParams: { name: userName, role: userRole }
+        if (this.role == 'Admin') {
+          this.router.navigate(['admin'], {
+            queryParams: { name: userName, role: this.role }
           });
         } else {
           this.router.navigate(['user']);

@@ -13,17 +13,30 @@
         <p class="text-muted">ดูตรวจประจำวันเทคนิค</p>
       </div>
     </div>
-  
+
     <!-- Main Content -->
     <div id="content" class="flex-grow-1 d-flex flex-column" style="height: 100vh;">
       <!-- Navbar -->
+
       <div class="p-3 shadow-sm bg-white d-flex justify-content-between align-items-center">
-        <button class="btn btn-light" type="button" (click)="toggleSidebar()">
-          <i class="bi bi-list" style="font-size: 24px;"></i>
-        </button>
+        <div>
+          @if(buttonAdmin){
+            <button type="button" class="btn btn-outline-secondary m-2">
+              <a
+                class="text-decoration-none text-center fw-bold text-dark"
+                routerLink="/admin"
+              >Back</a>
+              </button>
+          }
+          <button class="btn btn-light" type="button" (click)="toggleSidebar()">
+            <i class="bi bi-list" style="font-size: 24px;"></i>
+          </button>
+        </div>
+
+
         <h5 class="mb-0">BooBoo Memory</h5>
       </div>
-  
+
       <!-- Chat Area -->
       <div class="d-flex flex-column flex-grow-1 justify-content-between align-items-center p-3">
         <!-- Initial Message -->
@@ -49,7 +62,7 @@
             </button>
           </div>
         </div>
-  
+
         <!-- Chat Messages -->
         <div
           *ngIf="messages.length > 0"
@@ -66,13 +79,13 @@
                 'bg-success text-white': message.isUser,
                 'bg-secondary text-white': !message.isUser
               }"
-              style="max-width: 70%;" 
+              style="max-width: 70%;"
             >
               {{ message.text }}
             </div>
           </div>
         </div>
-  
+
         <!-- Chat Input -->
         <div
           *ngIf="messages.length > 0"
@@ -93,4 +106,3 @@
       </div>
     </div>
   </div>
-  

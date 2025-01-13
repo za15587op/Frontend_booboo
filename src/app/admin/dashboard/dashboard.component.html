@@ -1,37 +1,55 @@
 <app-navbar />
 <section>
-    <div class="too-bar py-4 px-3shadow-sm">
-        <ul class="list-unstyled">
+  <div class="too-bar py-4 px-3shadow-sm">
+    <ul class="list-unstyled">
+      <li class="d-flex flex-column align-items-center">
+        <a
+          class="text-decoration-none text-center fw-bold text-dark"
+          routerLink="/admin/uploadfile"
+        >
+          <i class="bi bi-file-earmark-arrow-up fs-3"></i>
+          <p class="mb-0 fs-6">UPLOAD</p>
+        </a>
+      </li>
+      <li class="d-flex flex-column align-items-center">
+        <a
+          class="text-decoration-none text-center fw-bold text-dark"
+          routerLink="/admin/datastored"
+        >
+        <i class="bi bi-folder2-open fs-3"></i>
+          <p class="fw-bold fs-6 mb-0">STORED</p>
+        </a>
+      </li>
+      <li class="d-flex flex-column align-items-center">
+        <a
+          class="text-decoration-none text-center fw-bold text-dark"
+          routerLink="/admin/user"
+        >
+        <i class="fa-brands fa-rocketchat fs-3"></i>
+          <p class="fw-bold fs-6 mb-0">CHATS</p>
+        </a>
+      </li>
+      <li class="d-flex flex-column align-items-center">
+        <a
+          class="text-decoration-none text-center fw-bold text-dark"
+          routerLink="/admin/UserManage"
+        >
+        <i class="bi bi-person-circle fs-3"></i>
+          <i class="fa-solid fa-user"></i>
+          <p class="fw-bold fs-6 mb-0">User Manage</p>
+        </a>
+      </li>
+    </ul>
+  </div>
 
-            <li class="d-flex flex-column align-items-center ">
-                <a class="text-decoration-none text-center fw-bold text-dark" routerLink="/admin/uploadfile">
-                    <i class="bi bi-file-earmark-arrow-up fs-3"></i>
-                    <p class="mb-0 fs-6">UPLOAD</p>
-                </a>
-              </li>
-              <li class="d-flex flex-column align-items-center ">
-                <a class="text-decoration-none text-center fw-bold text-dark" routerLink="/admin/DataStored">
-                <i class="bi bi-folder2-open fs-3 "></i>
-                <p class="fw-bold fs-6 mb-0">STORED</p>
-                </a>
-              </li>
-              <li class="d-flex flex-column align-items-center">
-                <i class="bi bi-chat-right-text fs-3 "></i>
-                <p class="fw-bold fs-6 mb-0">CHATS</p>
-              </li>
-              <li class="d-flex flex-column align-items-center">
-                <i class="bi bi-receipt fs-3 "></i>
-                <p class="fw-bold fs-6 mb-0">RECEIPT</p>
-              </li>
-        </ul>
-      </div>
+  <div class="position-absolute top-50 start-50 translate-middle text-center">
+    <h2 class="fs-1 fw-bold text-shadow">BooBoo Memory</h2>
+    <h3 class="fs-4 my-4 text-shadow">Partners help you make decisions.</h3>
 
-      <div class="position-absolute top-50 start-50 translate-middle text-center">
-        <h2 class="fs-1 fw-bold text-shadow">BooBoo Memory</h2>
-        <h3 class="fs-4 my-4 text-shadow">Partners help you make decisions.</h3>
-
-        <div class="bg-danger bg-opacity-25 py-3 px-4 rounded-pill d-inline-block shadow-sm">{{Name}} : {{Role}}
-          </div>
-        </div>
-
+    <div
+      class="bg-danger bg-opacity-25 py-3 px-4 rounded-pill d-inline-block shadow-sm"
+    >
+      {{ Name }} : {{ Role }}
+    </div>
+  </div>
 </section>

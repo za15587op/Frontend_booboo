@@ -9,24 +9,34 @@ import { UserComponent } from './user/user.component';
 import { NavbarComponent } from './component/navbar/navbar.component';
 import { DataStoredComponent } from './admin/data-stored/data-stored.component';
 import { getDataFileResolve } from './admin/data-stored/data-stored.resolver';
-import { LoginGuard } from './auth/login/login.guard';
+import { LoginGuard } from './auth/guard/login.guard';
 import { UserManageComponent } from './admin/user-manage/user-manage.component';
-
+import { AdminGuard } from './auth/guard/admin.guard';
 
 const routes: Routes = [
-  {path:"" , component:LoginComponent},
-  {path:"navbar", component:NavbarComponent },
-  {path: "admin/dashboard", component: DashBoardComponent , canActivate : [LoginGuard] },
-  {path: "admin/uploadfile", component: UploadFileComponent, canActivate : [LoginGuard]},
-  {path: "admin-info", component: AdminFileINFOComponent},
-  {path: "admin/DataStored", component: DataStoredComponent, resolve :{getDataFileResolve}},
-  {path: "user", component: UserComponent},
-  {path: 'auth/callback', component: LoginComponent },
-  {path: 'admin/UserManage', component: UserManageComponent, canActivate: [LoginGuard]}
+  { path: '', component: LoginComponent },
+  { path: 'navbar', component: NavbarComponent },
+  { path: 'auth/callback', component: LoginComponent },
+  {
+    path: '',
+    canActivateChild: [AdminGuard],
+    children: [
+      { path: 'admin', component: DashBoardComponent },
+      { path: 'admin/uploadfile', component: UploadFileComponent },
+      {
+        path: 'admin/datastored',
+        component: DataStoredComponent,
+        resolve: { getDataFileResolve },
+      },
+      { path: 'admin/UserManage', component: UserManageComponent },
+      { path: 'admin/user', component: UserComponent },
+    ],
+  },
+  { path: 'user', component: UserComponent },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

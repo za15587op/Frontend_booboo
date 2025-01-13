@@ -31,8 +31,9 @@ export class UploadFileComponent {
   }
 
   uploadFiles(file: FileList): void {
-    const user_id = sessionStorage.getItem('user_id');
+    const user_id = localStorage.getItem('user_id');
     this.userId = user_id || '';
+    console.log(this.userId);
 
     this.uploading = true;
     for (let index = 0; index < file.length; index++) {

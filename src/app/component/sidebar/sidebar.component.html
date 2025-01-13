@@ -1,0 +1,12 @@
+<section class="sidebar" [ngClass]="{ 'sidebar-active': isSidebarOpen, 'sidebar-unactive': !isSidebarOpen }">
+  <h5>Chats</h5>
+
+  <div class="chats">
+      <div>1</div>
+      <div>1</div>
+      <div>1</div>
+  </div>
+</section>
+<button class="toggle-btn" (click)="toggleSidebar()">
+  {{ isSidebarOpen ? 'Close Sidebar' : 'Open Sidebar' }}
+</button>

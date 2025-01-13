@@ -1,5 +1,12 @@
 <app-navbar />
 <section>
+  <button type="button" class="btn btn-outline-secondary m-2">
+    <a
+      class="text-decoration-none text-center fw-bold text-dark"
+      routerLink="/admin"
+      ><i class="fa-solid fa-arrow-left"></i> Back</a
+    >
+  </button>
     <div class="container mt-4">
         <div class="border rounded shadow p-4">
              <div class = " d-flex justify-content-between">
@@ -17,7 +24,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
+
                     @for (item of SearchData; track $index) {
                     <tr>
                         <td><i class="bi bi-file-pdf text-danger me-2"></i>{{item.file_name}}</td>

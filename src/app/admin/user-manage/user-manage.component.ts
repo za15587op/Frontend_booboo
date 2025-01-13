@@ -11,7 +11,7 @@ import { UserManageService } from './user-manage.service';
   styleUrl: './user-manage.component.scss'
 })
 export class UserManageComponent implements OnInit {
-  UserAll: User[] = [];
+  UserAll: any[] = []
   user_id:string = ''
   form!:FormGroup
   searchText:string = ''
@@ -36,7 +36,6 @@ export class UserManageComponent implements OnInit {
   }
 
   ChangeRole(user_id: string, user_role: string) {
-    alert("are you sure ?");
     console.log(`User ID: ${user_id}, Selected Role: ${user_role}`);
     const data = {
       user_role: user_role
@@ -48,13 +47,20 @@ export class UserManageComponent implements OnInit {
   }
 
   getDataUser() {
-    this.sv.getUser().subscribe((res) => {
+    this.sv.getUser().subscribe((res: any) => {
       console.log(res);
       this.UserAll = res;
       this.form.patchValue(this.UserAll);
     });
   }
 
+  Search(): any[] {
+    console.log(this.searchText);
+    return this.UserAll.filter((item: any) =>
+      item.name.toLowerCase().includes(this.searchText.toLowerCase()) ||
+      item.username.toLowerCase().includes(this.searchText.toLowerCase())
+    );
+  }
 
 
 }

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DataStoredService } from './data-stored.service';
-import * as pako from 'pako';
+
 @Component({
   selector: 'app-data-stored',
   standalone: false,
@@ -34,7 +34,7 @@ export class DataStoredComponent implements OnInit {
       this.datasv.deldataflie(fileId).subscribe({
         next: () => {
           alert('ลบไฟล์สำเร็จ');
-          window.location.reload(); // รีเฟรชหน้าเว็บหลังจากลบสำเร็จ
+          window.location.reload();
         },
         error: (err) => {
           console.error('Error deleting file:', err);
@@ -86,7 +86,7 @@ export class DataStoredComponent implements OnInit {
         (item.file_name && item.file_name.toLowerCase().includes(this.searchTerm.toLowerCase()))
       );
     } else {
-      this.SearchData = this.data; 
+      this.SearchData = this.data;
         }
   }
 }

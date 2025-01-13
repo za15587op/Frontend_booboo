@@ -1,5 +1,12 @@
 <app-navbar />
   <section>
+    <button type="button" class="btn btn-outline-secondary m-2">
+      <a
+        class="text-decoration-none text-center fw-bold text-dark"
+        routerLink="/admin"
+        ><i class="fa-solid fa-arrow-left"></i> Back</a
+      >
+    </button>
     <div class="container mt-4">
       <div class="border rounded shadow p-4">
         <div class="d-flex justify-content-between">
@@ -10,6 +17,7 @@
               placeholder="ค้นหาผู้ใช้"
               [(ngModel)]="searchText"
               style="border-radius: 1rem; font-size: 18px; width: 600px;"
+              onchange="Search()"
             >
           </div>
         </div>
@@ -24,7 +32,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (item of UserAll; track $index) {
+            @for (item of Search(); track $index) {
             <tr >
               <td>{{ $index + 1 }}</td>
               <td>{{ item.name }}</td>

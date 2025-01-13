@@ -1,24 +1,24 @@
-<nav class="navbar py-3 px-3 shadow-sm">
-  <div class="container-fluid">
+<header>
+  <nav class="navbar py-3 px-3 shadow-sm">
+    <div class="container-fluid">
       <div class="d-flex align-items-center gap-3">
-        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#navbarOffcanvasLg" aria-controls="navbarOffcanvasLg" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <!-- <div class="offcanvas offcanvas-end" tabindex="-1" id="navbarOffcanvasLg" aria-labelledby="navbarOffcanvasLgLabel">
+        <a class="text-decoration-none text-center fw-bold text-dark" routerLink="/admin">
+        <img
+          src="https://s3-alpha-sig.figma.com/img/ed57/3b4e/c0a6250dc4bb73ccfc04ddff683fec69?Expires=1736726400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=OuRK6hLtnk1C1D-9CftitdxujnR4KlfLyJ71g1i68oZktFZVLk-bVCi5nJcoMz5wo7QXGLmnF52TMAt07hYFxGNIaC99U61PrBSjpgj6Qu4YjgFTWjX9dNs6gPx1zDA887uAssqbLqbFiE~rc9jhbjGmTHlj7G9Mk~Xey61N555Dj5NvUPOQw3MZfd0Rf0Amtt6isXJynSvev8Zvdzz09ARLCoosznbeBW~K46i6cGgTAVQZ0mgmKfLW4JkkaZOgxuo3yxuUN5117lb5KtlDc8WC5OEtxEDyyyDQk1-JkD9nKki~Le8KbMtyfYULCaT670-y11EG-sUzP~AND8obEg_"
+          class="img-fluid"
+          alt="Logo"
+          style="height: 45px; width: 40px"
 
-        </div> -->
-          <img src="https://s3-alpha-sig.figma.com/img/ed57/3b4e/c0a6250dc4bb73ccfc04ddff683fec69?Expires=1736726400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=OuRK6hLtnk1C1D-9CftitdxujnR4KlfLyJ71g1i68oZktFZVLk-bVCi5nJcoMz5wo7QXGLmnF52TMAt07hYFxGNIaC99U61PrBSjpgj6Qu4YjgFTWjX9dNs6gPx1zDA887uAssqbLqbFiE~rc9jhbjGmTHlj7G9Mk~Xey61N555Dj5NvUPOQw3MZfd0Rf0Amtt6isXJynSvev8Zvdzz09ARLCoosznbeBW~K46i6cGgTAVQZ0mgmKfLW4JkkaZOgxuo3yxuUN5117lb5KtlDc8WC5OEtxEDyyyDQk1-JkD9nKki~Le8KbMtyfYULCaT670-y11EG-sUzP~AND8obEg_"
-              class="img-fluid"
-              alt="Logo"
-              style="height: 45px; width: 40px;">
-          <span class="fs-3">BOOBOO MEMORY</span>
+        />
+        <span class="fs-3">BOOBOO MEMORY</span>
+        </a>
       </div>
 
       <div class="d-flex align-items-center gap-2">
-          <i class="bi bi-person-circle fs-3"></i>
-          <span class="fst-italic">สวัสดีคุณ {{data.name}}</span>
-          <button class="btn p-0 border-0 ms-2" (click)="logout()">logout
-          </button>
+        <i class="bi bi-person-circle fs-3"></i>
+        <span class="fst-italic">สวัสดีคุณ {{ data.name }}</span>
+        <button class="btn p-0 border-0 ms-2" (click)="logout()">logout</button>
       </div>
-  </div>
-</nav>
+    </div>
+  </nav>
+</header>
